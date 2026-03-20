@@ -1,0 +1,56 @@
+# Room: Careers in Cybersecurity
+**Date:** 20 March 2026
+**Platform:** TryHackMe
+**Difficulty:** Easy
+
+## What the Room Covered
+Overview of the different career paths available in cybersecurity and
+what each role actually does day to day.
+
+## Tasks Completed
+
+### Task 1 — Is Cybersecurity Right for You?
+- Good fit if you are curious, enjoy solving problems, like understanding
+  how things work under the hood
+- Field benefits: high demand globally, strong pay, constantly evolving
+- No two days are the same — always new threats, new techniques
+
+### Task 2 — Defensive Roles (Blue Team)
+- **SOC Analyst** — monitors dashboards, triages alerts, first line of defense
+- **Incident Responder** — jumps in when an attack is confirmed, contains damage
+- **Threat Intelligence Analyst** — studies attacker groups and predicts next moves
+- **Digital Forensics** — investigates after an attack, recovers evidence
+- **Malware Analyst** — reverse engineers malicious software to understand it
+
+### Task 3 — Security Engineers
+- Design and build secure systems from the ground up
+- Maintain and update security infrastructure
+- Document security processes and policies
+- Assess risks across the organization
+- Ensure applications are protected before deployment
+- Bridge between developers and security teams
+
+### Task 4 — Penetration Testing (Red Team)
+- Legally and ethically test systems for vulnerabilities
+- Perform full security assessments simulating real attacks
+- Analyze and document results into professional reports
+- Findings handed to the organization to fix
+- Requires thinking creatively like an attacker
+
+### Task 5 — Career Quiz Result
+- Completed the quiz to identify best suited path
+- **Result: Red Team / Penetration Testing**
+- Confirms offensive security is the right focus going forward
+
+## Key Concepts Learned
+- Cybersecurity is not one job — it's a wide field with very different roles
+- Blue team = defend | Red team = attack (ethically)
+- Security Engineers focus on building secure systems, not just testing them
+- Penetration testers write professional reports — communication matters too
+- Quiz result points toward offensive security as primary learning path
+
+## My Thoughts
+Good to get a bird's eye view of the field before going deep. Getting
+Red Team on the quiz lines up with what I already wanted to do. Offensive
+security / pentesting is the goal — TryHackMe Jr Pentester path is the
+right next step.

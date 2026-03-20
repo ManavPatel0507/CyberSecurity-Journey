@@ -1,0 +1,48 @@
+# Room: Defensive Security Intro
+**Date:** 20 March 2026
+**Platform:** TryHackMe
+**Difficulty:** Easy
+
+## What the Room Covered
+Introduction to defensive security — the blue team side of cybersecurity.
+Unlike ethical hackers who find vulnerabilities, defensive security
+professionals detect and respond to attacks as they happen.
+
+## Tasks Completed
+
+### Task 1 — What Defensive Security Does
+- Detect, analyze and respond to active attacks
+- Called "Blue Team" work professionally
+- Opposite of offensive/red team hacking
+- Includes SOC (Security Operations Center) analysts
+
+### Task 2 — Analyst Dashboard
+- Checked a simulated SOC analyst dashboard
+- Dashboard shows live alerts, flagged IPs, suspicious activity
+- Analysts monitor this continuously to catch intrusions early
+
+### Task 3 — Investigating the Alert
+- Looked into what the suspicious IP was trying to access
+- The URL/link being requested tells you the attacker's intention
+  - e.g. trying to access /admin → privilege escalation attempt
+  - e.g. trying to access /login repeatedly → brute force attack
+- Based on what they're after, you decide how to respond
+
+### Task 4 — Response Actions
+- Blocked the malicious IP address
+- Applied rate limiting — restricts how many requests per time period
+- Limited concurrent sessions — prevents overwhelming the server
+- Lesson: response isn't just blocking, it's also hardening the system
+  so the same attack can't work again
+
+## Key Concepts Learned
+- Offensive = find vulnerabilities | Defensive = detect and respond
+- SOC analysts work from dashboards monitoring live traffic
+- The URL being targeted reveals attacker intent
+- Blocking an IP + rate limiting + session limits = layered defense
+- This approach is called "Defense in Depth"
+
+## My Thoughts
+Interesting contrast to Room 1 — same scenario but from the defender's
+side. The dashboard approach makes it clear why log monitoring is such
+a big part of security jobs. You can't block what you can't see.

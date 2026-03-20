@@ -1,0 +1,46 @@
+# Room: Intro to Ethical Hacking (Room-1)
+**Date:** 20 March 2026
+**Platform:** TryHackMe
+**Difficulty:** Easy
+
+## What the Room Covered
+Introduction to how ethical hackers (white hat) think — find 
+vulnerabilities before malicious hackers do and report/fix them.
+
+## Tasks Completed
+
+### Task 1 — Hacker Mindset
+- Ethical hackers think like attackers but work legally
+- Goal: find loopholes and weaknesses before bad guys do
+- Called "penetration testing" professionally
+
+### Task 2 — Fake Banking Website
+- Accessed a simulated banking site
+- Found exposed account numbers by exploring the site
+- Lesson: sensitive data should never be visible without authentication
+
+### Task 3 — DIRB Command (Directory Brute Forcing)
+- Used `dirb` to discover hidden pages on the website
+- DIRB works by trying common directory/file names automatically
+```bash
+dirb http://<target-ip>
+```
+- Found a hidden admin/management URL that wasn't linked anywhere and was hidden
+
+### Task 4 — Exploiting the Hidden Page
+- Used the hidden URL found via DIRB to access an unauthorized page
+- Was able to manipulate bank balance from that page
+- Lesson: security through obscurity (hiding URLs) is NOT real security
+
+## Key Concepts Learned
+- White hat vs black hat hacking
+- Always get written permission before testing — without it, it's illegal
+- Hidden pages are still accessible if not properly protected
+- DIRB is a directory enumeration tool
+
+## Key Command
+dirb http://<target-ip>    # brute force hidden directories on a website
+
+## My Thoughts
+Interesting to see how just one hidden unprotected page can 
+compromise an entire system. DIRB was simpler to use than expected.

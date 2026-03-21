@@ -1,0 +1,27 @@
+---
+
+## Level 1 → Level 2
+**Objective:** Find the password stored in a file named `-` in the home directory.
+
+**Commands Used:**
+```bash
+ls          # found a file literally named "-"
+cat -- -    # attempted but did NOT work
+cat ./-     # worked — prints the contents of the file named "-"
+```
+
+**What I Learned:**
+- Hyphens (`-`) are special characters in Linux — commands interpret
+  them as flags/options, not filenames
+- There are files whose name could start from '-filename'
+- Two ways to deal with special character filenames:
+  - `./` before the name tells Linux "this is a file path, not a flag"
+  - `--` double hyphen signals end of flags (didn't work here)
+- Always use `./` as the safer, more reliable option
+- This applies to other commands too — `rm ./-`, `mv ./-` etc.
+- Files can be named almost anything in Linux — including symbols,
+  which is why knowing how to handle them matters
+
+**Key Takeaway:**
+When a filename starts with `-`, always use `cat ./<filename>` 
+instead of just `cat <filename>`.

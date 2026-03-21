@@ -1,0 +1,41 @@
+---
+
+## Level 4 → Level 5
+**Objective:** Find the only human readable file among 10 files in
+the `inhere` directory, all named `-file00` to `-file09`.
+
+**Commands Used:**
+```bash
+cd inhere              # moved into the inhere directory
+ls -la                 # listed all files: -file00 through -file09
+cat ./-file00          # checked files one by one
+cat ./-file07          # found the human readable password here
+```
+
+**What I Learned:**
+- Only one file contained human readable text — the rest contained
+  binary/garbage data which is unreadable
+- Used `./` prefix because all filenames started with `-` (hyphen)
+- Checked files manually one by one this time — inefficient but works
+
+**Smarter Way I Could Have Done It:**
+The `file` command checks what type of data is inside a file
+without opening it. Could have run:
+```bash
+file ./-file0*         # checks all files at once and labels each type
+```
+This would have instantly shown which file is "ASCII text" 
+(human readable) vs "data" (binary) without opening each one.
+Output would look like:
+```
+./-file00: data
+./-file01: data
+./-file02: data
+./-file07: ASCII text    ← this is the one
+./-file09: data
+```
+
+**Key Takeaway:**
+Always use the `file` command when dealing with multiple unknown
+files — in real pentesting you won't have time to open files one
+by one. `file ./*` will instantly tell you what each file contains.

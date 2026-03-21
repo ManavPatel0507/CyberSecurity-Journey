@@ -1,0 +1,35 @@
+---
+
+## Level 3 → Level 4
+**Objective:** Find a hidden file inside the `inhere` directory.
+
+**Commands Used:**
+```bash
+ls -a     # showed hidden files: . .. ...Hiding-From-You
+ls -la    # showed same files but with full details (permissions,
+          # owner, size, date) — "total 12" refers to disk blocks
+          # used, not number of files
+cat ...Hiding-From-You    # read the hidden file, found the password
+```
+
+**What I Learned:**
+
+**Hidden files in Linux:**
+- Any file starting with `.` is hidden
+- Plain `ls` will NOT show them
+- `ls -a` reveals all hidden files
+- `ls -la` reveals hidden files with full details
+
+**The dot entries in every directory:**
+- `.` (single dot) — refers to the current directory you are in
+- `..` (double dot) — refers to the parent directory one level up
+- These always appear in `ls -la` output, they are not files
+
+**Three dots (`...`) has no special meaning in Linux** — it was
+just the filename chosen here to make it harder to spot since it
+blends in visually with the `.` and `..` entries above it.
+
+**Key Takeaway:**
+Always use `ls -la` when exploring a system during pentesting —
+hidden files often contain passwords, configs, and sensitive data
+that plain `ls` will completely miss.

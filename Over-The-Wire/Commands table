@@ -1,0 +1,109 @@
+# 📖 Command Reference
+A running list of all commands learned throughout my cybersecurity journey.
+
+---
+
+## 🔵 Basic Navigation & File Commands
+
+| Command | What it Does | Example |
+|---|---|---|
+| `ls` | List files in current directory | `ls` |
+| `ls -a` | List all files including hidden ones | `ls -a` |
+| `ls -la` | Detailed list including hidden files | `ls -la` |
+| `cd foldername` | Move into a folder | `cd inhere` |
+| `cd ..` | Go back one level up | `cd ..` |
+| `cd ~` | Go straight to home directory | `cd ~` |
+| `pwd` | Print current directory path | `pwd` |
+
+---
+
+## 🔵 Reading Files
+
+| Command | What it Does | Example |
+|---|---|---|
+| `cat filename` | Print contents of a file | `cat readme` |
+| `cat ./-` | Read a file starting with hyphen | `cat ./-` |
+| `cat ./"file name"` | Read a file with spaces using quotes | `cat ./"spaces in name"` |
+| `cat ./file\ name` | Read a file with spaces using backslash | `cat ./spaces\ in\ name` |
+| `cat file1 file2` | Print multiple files one after another | `cat file1 file2` |
+
+---
+
+## 🔵 File Inspection
+
+| Command | What it Does | Example |
+|---|---|---|
+| `file filename` | Shows what type a file is (text, binary etc) | `file readme` |
+| `file ./*` | Check type of ALL files in directory | `file ./*` |
+| `file ./-file0*` | Check type of multiple files with wildcard | `file ./-file0*` |
+| `du -h filename` | Show human readable size of a file | `du -h readme` |
+| `du -ah` | Show size of everything in current directory | `du -ah` |
+
+---
+
+## 🔵 Finding Files
+
+| Command | What it Does | Example |
+|---|---|---|
+| `find . -name "readme"` | Find file by exact name | `find . -name "readme"` |
+| `find . -type f` | Find all files only (not folders) | `find . -type f` |
+| `find . -size 1033c` | Find file of exact size in bytes | `find . -size 1033c` |
+| `find / -user bandit7` | Find files owned by specific user | `find / -user bandit7` |
+
+---
+
+## 🔵 Special Character Filenames
+
+| Situation | Problem | Fix | Example |
+|---|---|---|---|
+| Filename starts with `-` | Read as a flag | Use `./` prefix | `cat ./-file` |
+| Filename starts with `--` | Read as a flag | Use `./` prefix | `cat ./--file` |
+| Filename has spaces | Terminal splits it | Use quotes or `\` | `cat ./"my file"` |
+| Filename has hyphens + spaces | Both problems | Use `./` + quotes | `cat ./"--my file"` |
+| Filename starts with `~` | Read as home dir | Use `./` prefix | `cat ./~file` |
+| Filename starts with `$` | Read as variable | Use `./` prefix | `cat ./$file` |
+| Filename starts with `...` | No problem | No fix needed | `cat ...filename` |
+
+---
+
+## 🔵 SSH (Secure Shell)
+
+| Command | What it Does | Example |
+|---|---|---|
+| `ssh user@host -p port` | Connect to remote server | `ssh bandit0@bandit.labs.overthewire.org -p 2220` |
+
+---
+
+## 🔵 System & Package Management
+
+| Command | What it Does | Example |
+|---|---|---|
+| `sudo command` | Run command as root/admin | `sudo apt update` |
+| `sudo apt update` | Fetch latest package lists | `sudo apt update` |
+| `sudo apt upgrade -y` | Install all available updates | `sudo apt upgrade -y` |
+
+---
+
+## 🔵 Linux Dot Notation
+
+| Symbol | Meaning |
+|---|---|
+| `.` | Current directory |
+| `..` | Parent directory |
+| `./` | "This is a file path" prefix — bypasses misinterpretation |
+| `.filename` | Hidden file (starts with single dot) |
+| `...filename` | Just a filename — no special meaning |
+
+---
+
+## 🔵 Wildcards
+
+| Symbol | Meaning | Example |
+|---|---|---|
+| `*` | Match any characters | `file ./*` matches all files |
+| `?` | Match single character | `file ./-file0?` matches -file00 to -file09 |
+
+---
+
+> 💡 This file is updated as new commands are learned.
+> Last updated: March 2026

@@ -1,0 +1,36 @@
+---
+
+## Level 2 → Level 3
+**Objective:** Find the password in a file whose name contains spaces.
+
+**Commands Used:**
+```bash
+ls                                    # found file named "spaces in this filename"
+cat "--spaces in this filename--"     # did NOT work
+cat ./"--spaces in this filename--"   # worked — quotes + ./ together
+cat ./--spaces\ in\ this\ filename--  # also worked — backslash method
+```
+
+**What I Learned:**
+Two ways to handle filenames with spaces in Linux:
+
+1. **Quotation marks** — wrap the entire filename in single or double quotes
+   - BUT if the filename also has hyphens, quotes alone aren't enough
+   - Need to combine with `./` prefix to tell Linux it's a filepath not a flag
+   - Correct: `cat ./"--filename with spaces--"`
+
+2. **Backslash escaping** — put `\` before every space in the filename
+   - `\` tells the terminal "the next character is part of the name,
+     not a separator"
+   - Correct: `cat ./--spaces\ in\ this\ filename--`
+
+**Combined Problem:**
+This file had BOTH hyphens AND spaces — so needed both fixes together:
+- `./` to handle the hyphens
+- Quotes or backslashes to handle the spaces
+- Missing either one caused the command to fail
+
+**Key Takeaway:**
+Real systems often have messy filenames with special characters.
+Always use `./` with hyphens, quotes or `\` with spaces, and
+combine both when a filename has multiple special characters.

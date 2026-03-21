@@ -1,0 +1,40 @@
+---
+
+## Level 5 → Level 6
+**Objective:** Find the password in a file somewhere inside the `inhere`
+directory with these properties: human-readable, 1033 bytes in size,
+not executable.
+
+**Commands Used:**
+```bash
+cd inhere                      # moved into inhere directory
+find . -size 1033c             # filtered all files by size (1033 bytes)
+                               # returned: ./maybehere07/.file2
+cat ./maybehere07/.file2       # retrieved the password
+```
+
+**Full Technically Correct Command:**
+```bash
+find . -size 1033c -readable ! -executable
+# -readable        → human readable files only
+# ! -executable    → excludes executable files (! means NOT)
+# -size 1033c      → exactly 1033 bytes (c = bytes)
+```
+
+**What I Learned:**
+- `find` can search recursively through ALL subdirectories at once
+  without needing to cd into each one manually
+- Size alone was specific enough to find the file here but combining
+  all filters is better practice
+- `c` after the size number means bytes — other units:
+  - `k` = kilobytes
+  - `M` = megabytes
+  - `G` = gigabytes
+- `!` before a flag means NOT — excludes files matching that property
+- The file was hidden (started with `.`) — another reason `ls` alone
+  would never have found it
+
+**Key Takeaway:**
+`find` with filters is far more efficient than manually checking
+directories one by one. In real pentesting, systems have thousands
+of files — manual checking is never an option.

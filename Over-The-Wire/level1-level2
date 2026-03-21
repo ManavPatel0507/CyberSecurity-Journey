@@ -25,3 +25,24 @@ cat ./-     # worked — prints the contents of the file named "-"
 **Key Takeaway:**
 When a filename starts with `-`, always use `cat ./<filename>` 
 instead of just `cat <filename>`.
+
+
+---
+
+## 📖 When to Use `./` Prefix
+
+`./` tells the terminal "this is a file path" not a command or flag.
+Only needed when a filename **starts with** a character the terminal misinterprets.
+
+| Filename Starts With | Problem Without `./` | Fix |
+|---|---|---|
+| `-` hyphen | Read as a flag/option | `cat ./-` |
+| `--` double hyphen | Read as a flag/option | `cat ./--filename` |
+| `~` tilde | Interpreted as home directory | `cat ./~file` |
+| `$` dollar | Interpreted as a variable | `cat ./$file` |
+| `!` exclamation | Triggers history expansion | `cat ./!file` |
+| `...` dots | No misinterpretation — `./` not needed | `cat ...filename` |
+
+**Note:** `./` only fixes problems at the **start** of a filename.
+For spaces anywhere in the name, use quotes or `\` instead.
+For filenames with both hyphens AND spaces, combine both fixes.

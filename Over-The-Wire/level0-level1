@@ -1,0 +1,74 @@
+# OverTheWire: Bandit
+**Platform:** OverTheWire
+**URL:** bandit.labs.overthewire.org
+
+---
+
+## Level 0 → Level 1
+**Objective:** Find the password stored in a file in the home directory.
+
+**Commands Used:**
+```bash
+ls          # listed files in current directory, found README file
+cat README  # read the contents of the file, found the password
+```
+
+**What I Learned:**
+- `ls` lists all files and folders in the current directory
+- `cat` reads and prints the contents of a file
+- Passwords/sensitive data can sit in plain text files on a system
+- Always check the home directory first — easy wins hide there
+
+---
+
+## 📖 Command Reference
+
+| Command | What it Does | Example |
+|---|---|---|
+| `ls` | Lists files and folders in current directory | `ls` |
+| `cd` | Change directory — move into a folder | `cd documents` |
+| `cat` | Reads and prints contents of a file | `cat readme` |
+| `file` | Tells you what type a file is (text, binary, image etc) | `file readme` |
+| `du` | Shows disk usage — how much space a file/folder takes | `du -h readme` |
+| `find` | Searches for files matching certain conditions | `find . -name "readme"` |
+
+### A Bit More Detail
+
+**ls**
+```bash
+ls        # basic list
+ls -la    # detailed list including hidden files (ones starting with .)
+```
+
+**cd**
+```bash
+cd foldername    # go into a folder
+cd ..            # go back one level up
+cd ~             # go straight to home directory
+```
+
+**cat**
+```bash
+cat filename       # print file contents
+cat file1 file2    # print multiple files one after another
+```
+
+**file**
+```bash
+file filename    # useful when a file has no extension and you
+                 # don't know if it's readable text or binary
+```
+
+**du**
+```bash
+du -h filename      # human readable size (KB, MB)
+du -ah              # size of everything in current directory
+```
+
+**find**
+```bash
+find . -name "readme"         # find by exact name
+find . -type f                # find all files (not folders)
+find . -size 1033c            # find file of exact size in bytes
+find / -user bandit7          # find files owned by a specific user
+```

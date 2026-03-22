@@ -1,0 +1,44 @@
+---
+
+## Level 7 → Level 8
+**Objective:** Find the password stored next to the word "millionth"
+inside a file called `data.txt` which contains thousands of entries.
+
+**Commands Used:**
+```bash
+ls                          # confirmed only data.txt in directory
+cat data.txt                # printed entire file — too many entries
+                            # to find manually
+grep 'millionth' data.txt   # filtered file for lines containing
+                            # the word millionth — returned the password
+```
+
+**Alternative Way (same result, less clean):**
+```bash
+cat data.txt | grep 'millionth'
+# pipes the output of cat into grep
+# works identically but unnecessary since grep can
+# read files directly — avoid this when you can
+```
+
+**What I Learned:**
+- `cat` alone is useless when a file has thousands of lines
+- `grep` searches through a file and returns only lines that
+  match the pattern you give it
+- `grep` can read files directly — no need to `cat` first
+- The `|` pipe symbol passes output of one command into another
+
+**How `grep` Works:**
+```bash
+grep 'word' filename          # find lines containing exact word
+grep -i 'word' filename       # case insensitive search
+grep -n 'word' filename       # shows line numbers of matches
+grep -v 'word' filename       # shows all lines EXCEPT matches
+grep -r 'word' .              # search recursively through directories
+grep -w 'word' filename       # returens only the word not the entire line
+```
+
+**Key Takeaway:**
+`grep` is one of the most used commands in Linux and pentesting.
+Any time you have a large file and need to find something specific,
+`grep` is almost always the fastest solution.

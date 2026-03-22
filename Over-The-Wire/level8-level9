@@ -1,0 +1,59 @@
+---
+
+## Level 8 → Level 9
+**Objective:** Find the only line in `data.txt` that appears exactly
+once — all other lines are repeated duplicates.
+
+**Commands Used:**
+```bash
+sort data.txt                         # sorted lines alphabetically
+                                      # not helpful alone
+
+sort data.txt | uniq                  # removed consecutive duplicates
+                                      # still showed too many entries
+
+sort data.txt | uniq -c               # added count of each duplicate
+                                      # reduced entries significantly
+                                      # but still noisy
+
+sort data.txt | uniq -c | grep "^\s*1 "  # filtered for lines with
+                                          # count of 1 — worked but
+                                          # unnecessarily complex
+```
+
+**Cleanest Way:**
+```bash
+sort data.txt | uniq -u
+# sort first so duplicates are adjacent (uniq needs this)
+# -u shows ONLY lines that appear exactly once
+# direct and clean — no grep needed
+```
+
+**Why `sort` is Needed Before `uniq`:**
+`uniq` only compares **adjacent lines** — it doesn't scan the
+whole file. So if duplicates aren't next to each other it won't
+catch them. `sort` groups all identical lines together first,
+making `uniq` work correctly.
+
+**What I Learned:**
+- `uniq` alone removes consecutive duplicate lines
+- `uniq -c` adds a count of how many times each line appears
+- `uniq -u` shows only lines that appear exactly once — cleanest
+  solution for this type of problem
+- `sort` must always come before `uniq` otherwise duplicates that
+  aren't adjacent will be missed
+- Pipes can be chained — output of sort feeds into uniq
+
+**All `uniq` Flags:**
+```bash
+uniq file           # remove consecutive duplicate lines
+uniq -c file        # show count of each line
+uniq -u file        # show only unique lines (appear once)
+uniq -d file        # show only duplicate lines (appear more than once)
+uniq -i file        # case insensitive comparison
+```
+
+**Key Takeaway:**
+Always check if the tool you're using has a built in flag for what
+you need before building complex chained commands. `uniq -u` does
+in one flag what took three chained commands to do manually.

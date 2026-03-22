@@ -22,7 +22,7 @@ A running list of all commands learned throughout my cybersecurity journey.
 | Command | What it Does | Example |
 |---|---|---|
 | `cat filename` | Print contents of a file | `cat readme` |
-| `cat ./-` | Read a file starting with hyphen | `cat ./-` |
+| `cat ./` | Read a file starting with hyphen | `cat ./-` |
 | `cat ./"file name"` | Read a file with spaces using quotes | `cat ./"spaces in name"` |
 | `cat ./file\ name` | Read a file with spaces using backslash | `cat ./spaces\ in\ name` |
 | `cat file1 file2` | Print multiple files one after another | `cat file1 file2` |
@@ -79,7 +79,7 @@ A running list of all commands learned throughout my cybersecurity journey.
 
 ## 🔵 System & Package Management
 
-| Command | What it Does | Example |
+| C 
 |---|---|---|
 | `sudo command` | Run command as root/admin | `sudo apt update` |
 | `sudo apt update` | Fetch latest package lists | `sudo apt update` |

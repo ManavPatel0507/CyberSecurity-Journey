@@ -1,0 +1,55 @@
+---
+
+## Level 9 → Level 10
+**Objective:** Find the password inside `data.txt` which contains a
+mix of binary and human readable data. Password is a readable string
+preceded by several `=` signs.
+
+**Commands Used:**
+```bash
+cat data.txt                    # printed unreadable binary garbage
+
+grep '=' data.txt               # returned nothing — grep refuses to
+                                # search binary files automatically
+
+strings data.txt                # extracted all human readable strings
+                                # from the binary file — easier to read
+                                # but still too many lines
+
+strings data.txt | grep '='     # combined both — extracted readable
+                                # strings then filtered for lines with
+                                # = signs — returned the password
+```
+
+**Why `grep` Alone Failed:**
+- `data.txt` is a binary file containing non-text data
+- `grep` detects binary files and skips them automatically
+- Avoids printing unreadable garbage characters to terminal
+- Solution: use `strings` first to extract readable content,
+  then pipe into `grep`
+
+**What `strings` Does:**
+- Scans any file (binary or text) and extracts sequences of
+  human readable characters
+- Ignores all binary/non-printable data
+- Essential tool when dealing with unknown file types
+- Commonly used in malware analysis and binary exploitation
+
+**What I Learned:**
+- Binary files contain non-readable data mixed with readable strings
+- `grep` silently skips binary files — always use `strings` first
+- `strings | grep 'pattern'` is a very common combination in pentesting
+- `file` command would have revealed data.txt was binary beforehand
+
+**Better Workflow for Unknown Files:**
+```bash
+file data.txt               # always check file type first
+                            # would have shown: data.txt: data (binary)
+strings data.txt | grep '=' # then extract and filter readable content
+```
+
+**Key Takeaway:**
+When `grep` returns nothing on a file that should have matches,
+the file is likely binary. Always run `file` first on unknown files
+and use `strings` to extract readable content from binary files
+before piping into `grep`.

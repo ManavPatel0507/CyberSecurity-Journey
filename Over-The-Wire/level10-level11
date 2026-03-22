@@ -1,0 +1,61 @@
+---
+
+## Level 10 → Level 11
+**Objective:** Find the password stored in `data.txt` which contains
+base64 encoded data.
+
+**Commands Used:**
+```bash
+ls                      # found only data.txt
+file data.txt           # returned ASCII text — explained below
+cat data.txt            # returned unreadable base64 encoded string
+base64 -d data.txt      # decoded the base64 and revealed the password
+```
+
+**Why `file` Showed ASCII Even Though Data Was Encoded:**
+- Base64 only uses readable characters: A-Z, a-z, 0-9, +, /
+- So the file technically IS readable ASCII text — just encoded
+- `file` command only checks if characters are readable/printable
+- It does NOT check if the content is meaningful or encoded
+- Lesson: ASCII means "readable characters" not "meaningful text"
+  A base64 string and a normal sentence are both ASCII
+
+**What is Base64?**
+- A way of encoding binary or text data into a safe readable format
+- Commonly used to transmit data over the internet, store passwords,
+  encode images in HTML etc
+- Recognizable by: long string of random looking characters often
+  ending with `=` or `==` padding signs
+- Example:
+```
+Normal:  Hello World
+Base64:  SGVsbG8gV29ybGQ=
+```
+
+**Base64 Commands:**
+```bash
+base64 -d file          # decode base64 file
+base64 file             # encode file to base64
+echo "text" | base64    # encode text to base64
+echo "SGVs" | base64 -d # decode base64 string directly
+```
+
+**What I Learned:**
+- Base64 is encoding not encryption — anyone can decode it instantly
+- `file` showing ASCII does not mean the content is plaintext —
+  always `cat` the file to check what it actually looks like
+- Base64 strings are easy to recognize — long random looking
+  characters, usually ending in `=` padding
+- Very commonly seen in CTFs, web security and real world systems
+
+**How to Recognize Base64:**
+- Long string of random A-Z, a-z, 0-9 characters
+- Often ends with `=` or `==`
+- Length is always a multiple of 4 characters
+- No spaces or special characters except `+` and `/`
+
+**Key Takeaway:**
+Base64 is NOT encryption — it is just encoding. It provides zero
+security on its own. Seeing base64 in a real pentest is a red flag
+that someone may be trying to obscure data without actually
+securing it.

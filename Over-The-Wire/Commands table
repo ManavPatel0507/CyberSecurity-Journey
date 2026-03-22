@@ -118,6 +118,25 @@ find . -name "readme" -o -name "README"
 
 ---
 
+## 🔵 Searching Inside Files
+
+| Command | What it Does | Example |
+|---|---|---|
+| `grep 'word' file` | Find lines containing a word | `grep 'millionth' data.txt` |
+| `grep -i 'word' file` | Case insensitive search | `grep -i 'password' data.txt` |
+| `grep -n 'word' file` | Show line numbers of matches | `grep -n 'millionth' data.txt` |
+| `grep -v 'word' file` | Show lines NOT containing word | `grep -v 'false' data.txt` |
+| `grep -r 'word' .` | Search recursively in all files | `grep -r 'password' .` |
+| `grep -w 'word' file` | Returns only the word not the entire line | `grep -w 'millionth' data.txt` |
+
+## 🔵 Pipe Operator
+
+| Command | What it Does | Example |
+|---|---|---|
+| `cmd1 \| cmd2` | Pass output of cmd1 into cmd2 | `cat data.txt \| grep 'millionth'` |
+
+---
+
 ## 🔵 Output Redirection
 
 | Command | What it Does | Example |

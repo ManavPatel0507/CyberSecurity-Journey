@@ -1,0 +1,49 @@
+---
+
+## Level 6 → Level 7
+**Objective:** Find a file hidden somewhere on the entire server with
+these properties: owned by user bandit7, owned by group bandit6, 33 bytes in size.
+
+**Commands Used:**
+```bash
+ls -la                                              # checked current directory,
+                                                    # nothing useful found
+
+find / -user bandit7 -group bandit6 -size 33c       # searched entire system
+                                                    # with all three filters
+                                                    # returned mostly "Permission
+                                                    # denied" errors but found
+                                                    # one valid path
+
+cat /var/lib/dpkg/info/bandit7.password             # retrieved the password
+                                                    # directly using full path
+```
+
+**Cleaner Command Using `2>/dev/null`:**
+```bash
+find / -user bandit7 -group bandit6 -size 33c 2>/dev/null
+# 2>/dev/null redirects all error messages away
+# only shows actual results — much cleaner output
+```
+
+**What I Learned:**
+- `/` searches the entire system when you have no idea where the file is
+- Multiple filters can be chained in one `find` command
+- `2>/dev/null` is extremely useful — suppresses permission denied
+  errors so real results don't get buried in noise
+- Once `find` gives you a full path you can use `cat` directly
+  with that path without needing to cd into the directory first
+- **Bits vs Bytes:** size is measured in bytes not bits
+  - `c` in `-size 33c` = bytes
+  - 1 byte = 8 bits — never mix these up in security/networking
+
+**How `2>/dev/null` Works:**
+- `2>` redirects "standard error" (error messages) somewhere
+- `/dev/null` is a black hole in Linux — anything sent there disappears
+- So `2>/dev/null` = "throw all error messages in the bin"
+- Very commonly used in pentesting to clean up noisy command output
+
+**Key Takeaway:**
+Always add `2>/dev/null` to `find /` commands — searching the entire
+system always generates permission denied errors and hiding them
+makes it much easier to spot the actual result you are looking for.

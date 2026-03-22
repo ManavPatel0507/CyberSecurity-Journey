@@ -176,6 +176,16 @@ find . -name "readme" -o -name "README"
 
 ---
 
+## 🔵 Binary File Analysis
+
+| Command | What it Does | Example |
+|---|---|---|
+| `strings file` | Extract readable text from binary file | `strings data.txt` |
+| `strings file \| grep 'word'` | Extract readable text and filter | `strings data.txt \| grep '='` |
+| `file filename` | Check if file is binary or text | `file data.txt` |
+
+---
+
 ## 🔵 SSH (Secure Shell)
 
 | Command | What it Does | Example |

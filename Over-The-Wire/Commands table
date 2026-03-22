@@ -52,6 +52,79 @@ A running list of all commands learned throughout my cybersecurity journey.
 | `find . -size 1033c` | Find file of exact size in bytes | `find . -size 1033c` |
 | `find . -readable` | Find only human readable files | `find . -readable` |
 | `find . ! -executable` | Find files that are NOT executable | `find . ! -executable` |
+| `find / -user bandit7 -group bandit6 -size 33c 2>/dev/null` | Find by user, group and size while hiding errors | — |
+
+---
+
+---
+
+## 🔵 Find Command — Search Locations
+
+| Symbol | Meaning | Searches From |
+|---|---|---|
+| `.` | Current directory | Where you are right now and all subdirectories below |
+| `/` | Root directory | Entire system — every single file on the whole Linux system |
+| `~` | Home directory | Your home folder and everything inside it |
+
+**Example:**
+```bash
+find . -size 1033c    # search only current directory and below
+find / -size 1033c    # search entire system from root
+find ~ -size 1033c    # search only home directory and below
+```
+
+---
+
+## 🔵 Find Command — Filter Parameters
+
+| Filter | What it Does | Example |
+|---|---|---|
+| `-name "filename"` | Match exact filename | `find . -name "readme"` |
+| `-name "*.txt"` | Match files by extension | `find . -name "*.txt"` |
+| `-type f` | Files only (no folders) | `find . -type f` |
+| `-type d` | Directories only (no files) | `find . -type d` |
+| `-size 33c` | Exact size in bytes | `find . -size 33c` |
+| `-size +1M` | Larger than 1 megabyte | `find . -size +1M` |
+| `-size -1M` | Smaller than 1 megabyte | `find . -size -1M` |
+| `-user username` | Owned by specific user | `find / -user bandit7` |
+| `-group groupname` | Owned by specific group | `find / -group bandit6` |
+| `-readable` | Human readable files only | `find . -readable` |
+| `! -executable` | Files that are NOT executable | `find . ! -executable` |
+| `-perm 777` | Files with exact permissions | `find . -perm 777` |
+
+**Size Units:**
+| Unit | Meaning |
+|---|---|
+| `c` | Bytes |
+| `k` | Kilobytes |
+| `M` | Megabytes |
+| `G` | Gigabytes |
+
+**Size Modifiers:**
+| Modifier | Meaning |
+|---|---|
+| `33c` | Exactly 33 bytes |
+| `+33c` | More than 33 bytes |
+| `-33c` | Less than 33 bytes |
+
+**Chaining Multiple Filters:**
+```bash
+# All filters are applied together — AND logic by default
+find / -user bandit7 -group bandit6 -size 33c 2>/dev/null
+
+# Use -o for OR logic between filters
+find . -name "readme" -o -name "README"
+```
+
+---
+
+## 🔵 Output Redirection
+
+| Command | What it Does | Example |
+|---|---|---|
+| `2>/dev/null` | Hides all error messages | `find / -size 33c 2>/dev/null` |
+| `>` | Redirects output to a file | `cat file > output.txt` |
+| `>>` | Appends output to a file | `cat file >> output.txt` |
 
 ---
 

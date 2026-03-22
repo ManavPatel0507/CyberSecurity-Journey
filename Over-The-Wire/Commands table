@@ -161,6 +161,21 @@ find . -name "readme" -o -name "README"
 
 ---
 
+## 🔵 Sorting and Deduplication
+
+| Command | What it Does | Example |
+|---|---|---|
+| `sort file` | Sort lines alphabetically | `sort data.txt` |
+| `sort -r file` | Sort in reverse order | `sort -r data.txt` |
+| `sort -n file` | Sort numerically | `sort -n data.txt` |
+| `uniq file` | Remove consecutive duplicate lines | `uniq data.txt` |
+| `uniq -c file` | Show count of each line | `uniq -c data.txt` |
+| `uniq -u file` | Show only unique lines (appear once) | `uniq -u data.txt` |
+| `uniq -d file` | Show only duplicate lines | `uniq -d data.txt` |
+| `sort file \| uniq -u` | Find lines that appear exactly once | `sort data.txt \| uniq -u` |
+
+---
+
 ## 🔵 SSH (Secure Shell)
 
 | Command | What it Does | Example |

@@ -22,7 +22,7 @@ A running list of all commands learned throughout my cybersecurity journey.
 | Command | What it Does | Example |
 |---|---|---|
 | `cat filename` | Print contents of a file | `cat readme` |
-| `cat ./` | Read a file starting with hyphen | `cat ./-` |
+| `cat ./-` | Read a file starting with hyphen | `cat ./-` |
 | `cat ./"file name"` | Read a file with spaces using quotes | `cat ./"spaces in name"` |
 | `cat ./file\ name` | Read a file with spaces using backslash | `cat ./spaces\ in\ name` |
 | `cat file1 file2` | Print multiple files one after another | `cat file1 file2` |
@@ -47,30 +47,27 @@ A running list of all commands learned throughout my cybersecurity journey.
 |---|---|---|
 | `find . -name "readme"` | Find file by exact name | `find . -name "readme"` |
 | `find . -type f` | Find all files only (not folders) | `find . -type f` |
-| `find . -size 1033c` | Find file of exact size in bytes | `find . -size 1033c` |
-| `find / -user bandit7` | Find files owned by specific user | `find / -user bandit7` |
+| `find . -type d` | Find directories only | `find . -type d` |
 | `find . -size 1033c` | Find file of exact size in bytes | `find . -size 1033c` |
 | `find . -readable` | Find only human readable files | `find . -readable` |
 | `find . ! -executable` | Find files that are NOT executable | `find . ! -executable` |
-| `find / -user bandit7 -group bandit6 -size 33c 2>/dev/null` | Find by user, group and size while hiding errors | — |
-
----
+| `find / -user bandit7` | Find files owned by specific user | `find / -user bandit7` |
+| `find / -group bandit6` | Find files owned by specific group | `find / -group bandit6` |
+| `find / -user bandit7 -group bandit6 -size 33c 2>/dev/null` | Chain multiple filters, hide errors | — |
 
 ---
 
 ## 🔵 Find Command — Search Locations
 
-| Symbol | Meaning | Searches From |
-|---|---|---|
-| `.` | Current directory | Where you are right now and all subdirectories below |
-| `/` | Root directory | Entire system — every single file on the whole Linux system |
-| `~` | Home directory | Your home folder and everything inside it |
-
-**Example:**
+| Symbol | Searches From |
+|---|---|
+| `.` | Current directory and all subdirectories below |
+| `/` | Entire system from root |
+| `~` | Home directory and everything inside it |
 ```bash
-find . -size 1033c    # search only current directory and below
-find / -size 1033c    # search entire system from root
-find ~ -size 1033c    # search only home directory and below
+find . -size 1033c    # search current directory and below
+find / -size 1033c    # search entire system
+find ~ -size 1033c    # search home directory and below
 ```
 
 ---
@@ -81,9 +78,9 @@ find ~ -size 1033c    # search only home directory and below
 |---|---|---|
 | `-name "filename"` | Match exact filename | `find . -name "readme"` |
 | `-name "*.txt"` | Match files by extension | `find . -name "*.txt"` |
-| `-type f` | Files only (no folders) | `find . -type f` |
-| `-type d` | Directories only (no files) | `find . -type d` |
-| `-size 33c` | Exact size in bytes | `find . -size 33c` |
+| `-type f` | Files only | `find . -type f` |
+| `-type d` | Directories only | `find . -type d` |
+| `-size 33c` | Exactly 33 bytes | `find . -size 33c` |
 | `-size +1M` | Larger than 1 megabyte | `find . -size +1M` |
 | `-size -1M` | Smaller than 1 megabyte | `find . -size -1M` |
 | `-user username` | Owned by specific user | `find / -user bandit7` |
@@ -107,12 +104,12 @@ find ~ -size 1033c    # search only home directory and below
 | `+33c` | More than 33 bytes |
 | `-33c` | Less than 33 bytes |
 
-**Chaining Multiple Filters:**
+**Chaining Filters:**
 ```bash
-# All filters are applied together — AND logic by default
+# AND logic by default — all filters must match
 find / -user bandit7 -group bandit6 -size 33c 2>/dev/null
 
-# Use -o for OR logic between filters
+# OR logic using -o
 find . -name "readme" -o -name "README"
 ```
 
@@ -126,38 +123,8 @@ find . -name "readme" -o -name "README"
 | `grep -i 'word' file` | Case insensitive search | `grep -i 'password' data.txt` |
 | `grep -n 'word' file` | Show line numbers of matches | `grep -n 'millionth' data.txt` |
 | `grep -v 'word' file` | Show lines NOT containing word | `grep -v 'false' data.txt` |
-| `grep -r 'word' .` | Search recursively in all files | `grep -r 'password' .` |
-| `grep -w 'word' file` | Returns only the word not the entire line | `grep -w 'millionth' data.txt` |
-
-## 🔵 Pipe Operator
-
-| Command | What it Does | Example |
-|---|---|---|
-| `cmd1 \| cmd2` | Pass output of cmd1 into cmd2 | `cat data.txt \| grep 'millionth'` |
-
----
-
-## 🔵 Output Redirection
-
-| Command | What it Does | Example |
-|---|---|---|
-| `2>/dev/null` | Hides all error messages | `find / -size 33c 2>/dev/null` |
-| `>` | Redirects output to a file | `cat file > output.txt` |
-| `>>` | Appends output to a file | `cat file >> output.txt` |
-
----
-
-## 🔵 Special Character Filenames
-
-| Situation | Problem | Fix | Example |
-|---|---|---|---|
-| Filename starts with `-` | Read as a flag | Use `./` prefix | `cat ./-file` |
-| Filename starts with `--` | Read as a flag | Use `./` prefix | `cat ./--file` |
-| Filename has spaces | Terminal splits it | Use quotes or `\` | `cat ./"my file"` |
-| Filename has hyphens + spaces | Both problems | Use `./` + quotes | `cat ./"--my file"` |
-| Filename starts with `~` | Read as home dir | Use `./` prefix | `cat ./~file` |
-| Filename starts with `$` | Read as variable | Use `./` prefix | `cat ./$file` |
-| Filename starts with `...` | No problem | No fix needed | `cat ...filename` |
+| `grep -r 'word' .` | Search recursively through directories | `grep -r 'password' .` |
+| `grep -w 'word' file` | Match whole word only | `grep -w 'millionth' data.txt` |
 
 ---
 
@@ -181,8 +148,69 @@ find . -name "readme" -o -name "README"
 | Command | What it Does | Example |
 |---|---|---|
 | `strings file` | Extract readable text from binary file | `strings data.txt` |
-| `strings file \| grep 'word'` | Extract readable text and filter | `strings data.txt \| grep '='` |
+| `strings file \| grep 'word'` | Extract readable text then filter | `strings data.txt \| grep '='` |
 | `file filename` | Check if file is binary or text | `file data.txt` |
+
+---
+
+## 🔵 Encoding and Decoding
+
+| Command | What it Does | Example |
+|---|---|---|
+| `base64 -d file` | Decode base64 encoded file | `base64 -d data.txt` |
+| `base64 file` | Encode file to base64 | `base64 data.txt` |
+| `echo "text" \| base64` | Encode a text string to base64 | `echo "hello" \| base64` |
+| `echo "string" \| base64 -d` | Decode a base64 string directly | `echo "SGVsbG8=" \| base64 -d` |
+| `tr 'A-Za-z' 'N-ZA-Mn-za-m' < file` | Decode ROT13 encoded text | `tr 'A-Za-z' 'N-ZA-Mn-za-m' < data.txt` |
+| `tr 'a-z' 'A-Z' < file` | Convert lowercase to uppercase | `tr 'a-z' 'A-Z' < data.txt` |
+| `tr 'A-Z' 'a-z' < file` | Convert uppercase to lowercase | `tr 'A-Z' 'a-z' < data.txt` |
+| `tr -d 'set' < file` | Delete specific characters from file | `tr -d '0-9' < data.txt` |
+| `tr -s 'set' < file` | Squeeze repeated characters into one | `tr -s ' ' < data.txt` |
+
+**How to Recognize Base64:**
+- Long string of A-Z, a-z, 0-9, +, / characters
+- Usually ends with `=` or `==` padding
+- Length always a multiple of 4
+- No spaces or special characters
+
+**How to Recognize ROT13:**
+- Looks like real words but completely scrambled
+- Only contains regular alphabet letters and spaces
+- Applying the same `tr` command twice returns original text
+
+---
+
+## 🔵 Pipe Operator
+
+| Command | What it Does | Example |
+|---|---|---|
+| `cmd1 \| cmd2` | Pass output of cmd1 into cmd2 | `cat data.txt \| grep 'millionth'` |
+
+---
+
+## 🔵 Output Redirection
+
+| Command | What it Does | Example |
+|---|---|---|
+| `2>/dev/null` | Hide all error messages | `find / -size 33c 2>/dev/null` |
+| `>` | Redirect output to a file | `cat file > output.txt` |
+| `>>` | Append output to a file | `cat file >> output.txt` |
+| `<` | Use file as input to a command | `tr 'A-Za-z' 'N-ZA-Mn-za-m' < data.txt` |
+
+---
+
+## 🔵 Special Character Filenames
+
+| Situation | Problem | Fix | Example |
+|---|---|---|---|
+| Filename starts with `-` | Read as a flag | Use `./` prefix | `cat ./-file` |
+| Filename starts with `--` | Read as a flag | Use `./` prefix | `cat ./--file` |
+| Filename has spaces | Terminal splits it | Use quotes or `\` | `cat ./"my file"` |
+| Filename has hyphens + spaces | Both problems | Use `./` + quotes | `cat ./"--my file"` |
+| Filename starts with `~` | Read as home dir | Use `./` prefix | `cat ./~file` |
+| Filename starts with `$` | Read as variable | Use `./` prefix | `cat ./$file` |
+| Filename starts with `!` | Triggers history expansion | Use `./` prefix | `cat ./!file` |
+| Filename starts with `...` | No problem | No fix needed | `cat ...filename` |
 
 ---
 
@@ -190,13 +218,13 @@ find . -name "readme" -o -name "README"
 
 | Command | What it Does | Example |
 |---|---|---|
-| `ssh user@host -p port` | Connect to remote server | `ssh bandit0@bandit.labs.overthewire.org -p 2220` |
+| `ssh user@host -p port` | Connect to a remote server | `ssh bandit0@bandit.labs.overthewire.org -p 2220` |
 
 ---
 
 ## 🔵 System & Package Management
 
-| C 
+| Command | What it Does | Example |
 |---|---|---|
 | `sudo command` | Run command as root/admin | `sudo apt update` |
 | `sudo apt update` | Fetch latest package lists | `sudo apt update` |
@@ -210,7 +238,7 @@ find . -name "readme" -o -name "README"
 |---|---|
 | `.` | Current directory |
 | `..` | Parent directory |
-| `./` | "This is a file path" prefix — bypasses misinterpretation |
+| `./` | File path prefix — bypasses misinterpretation |
 | `.filename` | Hidden file (starts with single dot) |
 | `...filename` | Just a filename — no special meaning |
 

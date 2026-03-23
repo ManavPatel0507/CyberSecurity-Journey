@@ -1,0 +1,72 @@
+---
+
+## Level 11 → Level 12
+**Objective:** Find the password in `data.txt` where all letters have
+been rotated by 13 positions (ROT13 cipher).
+
+**Commands Used:**
+```bash
+file data.txt                           # returned ASCII text
+cat data.txt                            # returned scrambled letters
+tr 'A-Za-z' 'N-ZA-Mn-za-m' < data.txt  # decoded ROT13, revealed password
+```
+
+**What is ROT13?**
+- ROT13 = "Rotate by 13 positions"
+- Each letter is shifted 13 places forward in the alphabet
+- Example:
+```
+Normal:  Hello World
+ROT13:   Uryyb Jbeyq
+```
+- Since the alphabet has 26 letters, applying ROT13 twice
+  returns the original text — it is its own reverse
+- ROT13 is NOT encryption — it is just basic obfuscation
+  Anyone who knows ROT13 can decode it instantly
+
+**How the `tr` Command Works Here:**
+```bash
+tr 'A-Za-z' 'N-ZA-Mn-za-m' < data.txt
+```
+- `tr` = translate characters
+- First argument `'A-Za-z'` = input character set (all letters)
+- Second argument `'N-ZA-Mn-za-m'` = what to replace them with
+- Each letter maps to the one 13 positions ahead:
+```
+A→N, B→O, C→P ... M→Z
+N→A, O→B, P→C ... Z→M
+```
+- `<` redirects file content as input to `tr`
+- Same as: `cat data.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m'`
+
+**Two Ways to Use `tr` Here:**
+```bash
+# Method 1 — input redirect (your way, cleaner)
+tr 'A-Za-z' 'N-ZA-Mn-za-m' < data.txt
+
+# Method 2 — pipe from cat (same result)
+cat data.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+```
+
+**What I Learned:**
+- ROT13 is a simple substitution cipher — shifts letters by 13
+- `tr` translates/replaces characters based on mapping you provide
+- `<` redirects a file as input to a command
+- ROT13 and Base64 are both encoding/obfuscation NOT encryption
+- Applying ROT13 twice always returns original text
+
+**`tr` Command General Usage:**
+```bash
+tr 'set1' 'set2' < file     # replace characters in set1 with set2
+tr -d 'set' < file          # delete characters in set
+tr -s 'set' < file          # squeeze repeated characters into one
+tr 'a-z' 'A-Z' < file       # convert lowercase to uppercase
+tr 'A-Z' 'a-z' < file       # convert uppercase to lowercase
+```
+
+**Key Takeaway:**
+ROT13 and Base64 are both commonly seen in CTFs and real systems
+as basic obfuscation. Neither provides any real security.
+Recognizing them quickly is an important skill — ROT13 looks like
+scrambled letters while Base64 looks like random alphanumeric
+strings ending in `=`.

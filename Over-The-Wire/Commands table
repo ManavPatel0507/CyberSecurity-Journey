@@ -214,6 +214,27 @@ find . -name "readme" -o -name "README"
 
 ---
 
+## 🔵 Compression and Decompression
+
+| Command | What it Does | Example |
+|---|---|---|
+| `xxd -r file > output` | Reverse a hexdump back to binary | `xxd -r demo1 > test1` |
+| `gunzip file.gz` | Decompress a gzip file | `gunzip test2.gz` |
+| `bzip2 -d file.bz2` | Decompress a bzip2 file | `bzip2 -d test4.bz2` |
+| `tar -xvf file` | Extract a tar archive | `tar -xvf test9.tar` |
+| `mktemp -d` | Create a temporary working directory | `mktemp -d` |
+| `cp file /path/` | Copy a file to a directory | `cp data.txt /tmp/tmp.abc/` |
+
+**Compression Format Quick Reference:**
+| `file` Output | Format | Tool |
+|---|---|---|
+| ASCII text | Hexdump | `xxd -r` |
+| gzip compressed data | Gzip | `gunzip` |
+| bzip2 compressed data | Bzip2 | `bzip2 -d` |
+| POSIX tar archive | Tar | `tar -xvf` |
+
+---
+
 ## 🔵 SSH (Secure Shell)
 
 | Command | What it Does | Example |

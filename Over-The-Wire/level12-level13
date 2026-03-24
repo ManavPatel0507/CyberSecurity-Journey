@@ -1,0 +1,81 @@
+---
+
+## Level 12 → Level 13
+**Objective:** Find the password inside `data.txt` which is a hexdump
+of a file that has been repeatedly compressed multiple times.
+
+**Commands Used:**
+```bash
+mktemp -d                        # created a temporary working directory
+                                 # returned: /tmp/tmp.10SqZiKA33
+cp data.txt /tmp/tmp.10SqZiKA33  # copied data.txt into temp directory
+cd /tmp/tmp.10SqZiKA33           # moved into temp workspace
+mv data.txt demo1                # renamed file to work with it freely
+xxd -r demo1 > test1             # reversed hexdump → got binary file
+file test1                       # gzip compressed data
+mv test1 test2.gz                # renamed to .gz for gunzip to accept
+gunzip test2.gz                  # decompressed → got test2
+file test2                       # bzip2 compressed data
+mv test2 test4.bz2               # renamed to .bz2
+bzip2 -d test4.bz2               # decompressed → got test4
+file test4                       # gzip compressed data
+mv test4 test5.gz                # renamed to .gz
+gunzip test5.gz                  # decompressed → got test5
+file test5                       # POSIX tar archive
+tar -xvf test5                   # extracted → got data5.bin
+file data5.bin                   # POSIX tar archive
+tar -xvf data5.bin               # extracted → got data6.bin
+file data6.bin                   # bzip2 compressed data
+mv data6.bin test8               # renamed
+bzip2 -d test8                   # decompressed → got test8.out
+file test8.out                   # POSIX tar archive
+mv test8.out test9.tar           # renamed to .tar
+tar -xvf test9.tar               # extracted → got data8.bin
+file data8.bin                   # gzip compressed data
+mv data8.bin test10.gz           # renamed to .gz
+gunzip test10.gz                 # decompressed → got test10
+file test10                      # ASCII text — final file!
+cat test10                       # revealed the password
+```
+
+**Full Decompression Chain:**
+```
+data.txt (hexdump)
+    → xxd -r    → binary
+    → gunzip    → bzip2
+    → bzip2 -d  → gzip
+    → gunzip    → tar
+    → tar -xvf  → tar
+    → tar -xvf  → bzip2
+    → bzip2 -d  → tar
+    → tar -xvf  → gzip
+    → gunzip    → ASCII text (password!)
+```
+
+**What I Learned:**
+- `xxd -r` reverses a hexdump back into its original binary form
+- `mktemp -d` creates a temporary working directory automatically
+- Home directory was read only — always use `/tmp` as workspace
+- `file` command must be run on every new file before doing anything
+- Different compression formats require different tools:
+
+| Format | Detected By `file` | Tool | Command |
+|---|---|---|---|
+| Hexdump | ASCII text | xxd | `xxd -r file > output` |
+| Gzip | gzip compressed data | gunzip | `mv file file.gz` then `gunzip file.gz` |
+| Bzip2 | bzip2 compressed data | bzip2 | `mv file file.bz2` then `bzip2 -d file.bz2` |
+| Tar | POSIX tar archive | tar | `tar -xvf file` |
+
+**Key Mistakes Made and Lessons Learned:**
+- Tried to gunzip a bzip2 file — always check `file` first
+- Forgot to redirect `xxd -r` output to a file — prints to screen without `>`
+- `gunzip` and `bzip2 -d` refuse files without correct extension —
+  always rename using `mv` before decompressing
+- `bzip2` without `-d` flag compresses instead of decompressing —
+  always use `-d` flag to decompress
+
+**Key Takeaway:**
+Always run `file` on every new file before attempting to decompress.
+Never assume the compression format — it changes every step and using
+the wrong tool wastes time. The workflow for every step is:
+`file` → identify format → rename correctly → decompress → repeat.

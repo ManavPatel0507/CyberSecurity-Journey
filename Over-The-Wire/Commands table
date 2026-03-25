@@ -306,5 +306,23 @@ find . -name "readme" -o -name "README"
 - `nmap` — scans to find open ports
 - `nc` — connects to and communicates with a port
 
+---
+
+---
+
+## 🔵 OpenSSL
+
+| Command | What it Does | Example |
+|---|---|---|
+| `openssl s_client -connect host:port` | Connect to SSL/TLS encrypted service | `openssl s_client -connect localhost:30001` |
+| `openssl enc` | Encrypt or decrypt files | `openssl enc -aes-256-cbc -in file` |
+| `openssl genrsa` | Generate RSA private key | `openssl genrsa -out key.pem 2048` |
+| `openssl x509` | Work with SSL certificates | `openssl x509 -in cert.pem -text` |
+| `openssl passwd` | Generate password hashes | `openssl passwd -1 mypassword` |
+
+**Key Syntax Difference:**
+- Netcat: `nc host port` — host and port separated by space
+- OpenSSL: `openssl s_client -connect host:port` — host and port joined by `:`
+
 > 💡 This file is updated as new commands are learned.
 > Last updated: March 2026

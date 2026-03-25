@@ -1,0 +1,79 @@
+---
+
+## Level 13 → Level 14
+**Objective:** No password this time — log into bandit14 using an RSA
+private key stored in a file on the bandit13 server.
+
+**Commands Used:**
+```bash
+# On bandit13 server:
+ls                              # found sshkey.private file
+cat ~/sshkey.private            # revealed the RSA private key contents
+
+# On local Kali machine:
+nano ~/bandit14.private         # created a new file and pasted the key
+                                # Ctrl+X → Y → Enter to save and exit
+chmod 600 ~/bandit14.private    # set correct permissions on key file
+ssh -i ~/bandit14.private bandit14@bandit.labs.overthewire.org -p 2220
+                                # logged into bandit14 using the key
+```
+
+**What is an RSA Private Key?**
+- A private key is an alternative to passwords for SSH authentication
+- Much more secure than passwords — nearly impossible to brute force
+- Stored as a text file with a specific format:
+```
+-----BEGIN RSA PRIVATE KEY-----
+[many lines of random looking characters]
+-----END RSA PRIVATE KEY-----
+```
+- The header and footer lines are NOT decorative — they are part of
+  the key format. SSH will reject the key without them
+
+**How `-i` Flag Works in SSH:**
+```bash
+# Normal SSH with password:
+ssh bandit14@bandit.labs.overthewire.org -p 2220
+
+# SSH with private key file:
+ssh -i ~/bandit14.private bandit14@bandit.labs.overthewire.org -p 2220
+# -i = identity file — tells SSH to use a key file instead of password
+```
+
+**Why `chmod 600` is Required:**
+- SSH refuses to use a private key if its permissions are too open
+- If other users can read your key it is considered compromised
+- `chmod 600` = owner can read and write, everyone else has no access
+- Without this step SSH throws a permission error and won't connect
+
+**Permission Numbers Explained:**
+| chmod | Owner | Group | Others |
+|---|---|---|---|
+| `600` | read+write | none | none |
+| `644` | read+write | read | read |
+| `700` | all | none | none |
+| `777` | all | all | all |
+
+**Two Terminal Window Workflow:**
+- Terminal 1 — connected to bandit13, used to cat the key
+- Terminal 2 — local Kali machine, used to create key file and connect
+- Never disconnect bandit13 until bandit14 connection is confirmed
+
+**Mistakes Made and Fixed:**
+- Initially copied key without the header and footer lines →
+  SSH threw "error in libcrypto" error
+- Fix: always copy the entire key including
+  `-----BEGIN RSA PRIVATE KEY-----` and `-----END RSA PRIVATE KEY-----`
+
+**What I Learned:**
+- Private keys are more secure than passwords for SSH authentication
+- The `-i` flag in SSH specifies a key file to use for login
+- Private key files must have `chmod 600` permissions or SSH rejects them
+- The header and footer lines of a key file are essential — never skip them
+- `nano` is used to create and edit files directly in the terminal
+
+**Key Takeaway:**
+In real pentesting, finding a private key file on a system is a
+huge win — it can give you direct SSH access to other servers
+without needing any password. Always look for `.private`, `.pem`,
+or `id_rsa` files when exploring a compromised system.

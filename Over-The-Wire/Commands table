@@ -324,5 +324,26 @@ find . -name "readme" -o -name "README"
 - Netcat: `nc host port` — host and port separated by space
 - OpenSSL: `openssl s_client -connect host:port` — host and port joined by `:`
 
+---
+
+## 🔵 Nmap (Network Mapper)
+
+| Command | What it Does | Example |
+|---|---|---|
+| `nmap host` | Basic scan of common ports | `nmap localhost` |
+| `nmap -p port host` | Scan specific port | `nmap -p 31790 localhost` |
+| `nmap -p range host` | Scan port range | `nmap -p 31000-32000 localhost` |
+| `nmap -p port1,port2 host` | Scan specific ports | `nmap -p 80,443 localhost` |
+| `nmap -sV host` | Service version detection | `nmap -sV localhost` |
+| `nmap -sV -p range host` | Version detection on range | `nmap -sV -p 31000-32000 localhost` |
+
+**OpenSSL Flags Learned:**
+| Flag | What it Does |
+|---|---|
+| `-connect host:port` | Connect to SSL/TLS service |
+| `-ign_eof` | Ignore End Of File — keeps connection alive |
+
+---
+
 > 💡 This file is updated as new commands are learned.
 > Last updated: March 2026

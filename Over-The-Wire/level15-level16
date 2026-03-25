@@ -1,0 +1,92 @@
+---
+
+## Level 15 → Level 16
+**Objective:** Submit the current level's password to port 30001 on
+localhost — same as last level but this time using SSL/TLS encryption.
+
+**Commands Used:**
+```bash
+ls                                        # nothing in home directory
+ls -la                                    # found hidden files
+cat /etc/bandit_pass/bandit15             # retrieved current password
+openssl s_client -connect localhost:30001 # connected with SSL/TLS
+                                          # typed password and hit Enter
+                                          # service returned next password
+```
+
+**What is SSL/TLS?**
+- SSL (Secure Sockets Layer) and TLS (Transport Layer Security) are
+  protocols that encrypt data being sent between two machines
+- TLS is the modern, more secure version of SSL
+- The same technology used by HTTPS in your browser every day
+- Without encryption, data sent over a network can be intercepted
+  and read by anyone — called a Man in the Middle attack
+- Plain `nc` cannot handle SSL/TLS — a different tool is needed
+
+**Why Not Plain Netcat This Time?**
+- Last level used `nc` which sends data as plain unencrypted text
+- This level's service requires an encrypted connection
+- Sending plain text to an SSL/TLS port won't work — the service
+  will reject it because it can't understand unencrypted data
+
+**What is OpenSSL?**
+- OpenSSL is a complete toolkit for SSL/TLS encryption and cryptography
+- Not just one tool — it's a collection of subcommands each doing
+  different things
+- Pre-installed on Kali Linux and most Linux systems
+- Widely used in pentesting, web security and real world systems
+
+**What is `s_client`?**
+- A subcommand of OpenSSL specifically for connecting to SSL/TLS services
+- Works like netcat but handles the entire encryption handshake automatically
+- Also displays detailed SSL/TLS connection info like certificates,
+  encryption method, and protocol version being used
+```bash
+openssl s_client -connect localhost:30001
+# openssl   → the toolkit
+# s_client  → SSL/TLS client subcommand
+# -connect  → flag specifying host:port to connect to
+# localhost:30001 → host and port combined with : (different from nc)
+```
+
+**Netcat vs OpenSSL s_client:**
+| Tool | Encryption | Use Case |
+|---|---|---|
+| `nc localhost 30000` | None — plain text | Unencrypted services |
+| `openssl s_client -connect localhost:30001` | SSL/TLS | Encrypted services |
+
+**About the Password File Found:**
+- `/etc/bandit_pass/bandit15` contained the same password used to
+  log into bandit15 — this is expected, not a mistake
+- That password is what gets submitted to port 30001
+- The service then returns the bandit16 password as the response
+
+**Note on DONE / RENEGOTIATING / KEYUPDATE Messages:**
+- These are SSL/TLS connection state messages that may appear
+- DONE — SSL handshake complete, connection ready for input
+- RENEGOTIATING — encryption keys being refreshed mid-connection
+- KEYUPDATE — TLS 1.3 updating encryption keys
+- If you see these and input isn't working, check the manpage
+  for connected commands: `man openssl s_client`
+
+**Other Useful OpenSSL Subcommands for Later:**
+```bash
+openssl enc          # encrypt or decrypt files
+openssl genrsa       # generate RSA private keys
+openssl x509         # work with SSL certificates
+openssl passwd       # generate password hashes
+```
+
+**What I Learned:**
+- SSL/TLS encrypts data in transit — essential for secure communication
+- Plain netcat only works for unencrypted services
+- OpenSSL s_client is the go-to tool for connecting to SSL/TLS services
+- `host:port` syntax is used with OpenSSL instead of `host port` like netcat
+- Recognizing when a service requires encryption is an important
+  pentesting skill
+
+**Key Takeaway:**
+In real pentesting, most modern services use SSL/TLS encryption.
+Knowing how to interact with encrypted services using OpenSSL
+s_client is essential — you'll use it constantly when testing
+HTTPS services, encrypted ports, and SSL/TLS configurations.

@@ -235,11 +235,31 @@ find . -name "readme" -o -name "README"
 
 ---
 
+## 🔵 File Permissions
+
+| Command | What it Does | Example |
+|---|---|---|
+| `chmod 600 file` | Owner read/write only, no access for others | `chmod 600 sshkey.private` |
+| `chmod 700 file` | Owner full access, no access for others | `chmod 700 folder` |
+| `chmod 777 file` | Everyone can read, write and execute | `chmod 777 file` |
+
+## 🔵 Text Editors
+
+| Command | What it Does | Example |
+|---|---|---|
+| `nano filename` | Open file in terminal text editor | `nano bandit14.private` |
+| `Ctrl+X` | Exit nano | — |
+| `Ctrl+O` | Save file without exiting | — |
+
+--
+
 ## 🔵 SSH (Secure Shell)
 
 | Command | What it Does | Example |
 |---|---|---|
 | `ssh user@host -p port` | Connect to a remote server | `ssh bandit0@bandit.labs.overthewire.org -p 2220` |
+| `ssh -i keyfile user@host -p port` | SSH using private key file | `ssh -i ~/bandit14.private bandit14@bandit.labs.overthewire.org -p 2220` |
+| `scp -P port user@host:~/file ~/local` | Copy file from remote server to local machine | `scp -P 2220 bandit13@bandit.labs.overthewire.org:~/sshkey.private ~/bandit14.private` |
 
 ---
 

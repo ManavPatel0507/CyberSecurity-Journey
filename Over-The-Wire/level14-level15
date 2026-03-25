@@ -1,0 +1,77 @@
+---
+
+## Level 14 → Level 15
+**Objective:** Retrieve the current level's password and submit it to
+a service running on port 30000 on localhost to get the next password.
+
+**Commands Used:**
+```bash
+cat /etc/bandit_pass/bandit14    # retrieved current level's password
+nc localhost 30000               # connected to service on port 30000
+                                 # typed the password and hit Enter
+                                 # service responded with next password
+```
+
+**What is `/etc/bandit_pass/`?**
+- This directory exists on the bandit server and stores the passwords
+  for every single bandit level
+- Each file is named after its level: `bandit0`, `bandit1`, `bandit14` etc
+- Permissions are locked so you can only read your own level's file
+- Trying to read another level's password returns Permission Denied
+- This is Linux file permissions in action — same `chmod` concept
+  learned in level 13
+
+**What is Localhost?**
+- `localhost` always means "the machine I am currently on"
+- It does NOT mean your own personal computer/Kali machine
+- When logged into the bandit server, localhost = the bandit server
+- This is an important networking concept in pentesting — services
+  often run internally on localhost and are not accessible from outside
+
+**What is Netcat (`nc`)?**
+- Netcat is a networking tool that can connect to any host and port
+  and send/receive raw data
+- Often called the "Swiss Army knife" of networking tools
+- Used in pentesting to interact with services, transfer files,
+  create backdoors, and test open ports
+- Unlike Nmap which only scans ports, Netcat actually communicates
+  with the service running on that port
+
+**How Netcat Works:**
+```bash
+nc localhost 30000    # connects to localhost on port 30000
+                      # once connected, anything you type gets
+                      # sent to the service
+                      # service response is printed back to you
+```
+
+**Netcat Basic Syntax:**
+```bash
+nc host port              # connect to a host on a specific port
+nc localhost 30000        # connect to local service on port 30000
+nc -l 1234               # listen mode — set up your own service
+                          # on port 1234 (used in reverse shells)
+```
+
+**Key Difference — Nmap vs Netcat:**
+| Tool | Purpose |
+|---|---|
+| `nmap` | Scans to find which ports are open |
+| `nc` (netcat) | Actually connects to and communicates with a port |
+
+**What I Learned:**
+- `/etc/bandit_pass/` stores all bandit passwords, protected by
+  Linux file permissions
+- You can only read your own level's password file
+- `localhost` refers to the current machine you are on, not your
+  personal computer
+- Netcat connects to services on specific ports and lets you
+  interact with them directly
+- Many real world services communicate over specific ports —
+  knowing how to talk to them raw is a key pentesting skill
+
+**Key Takeaway:**
+In real pentesting, finding services running on internal ports
+(localhost only) is very common. These services are often less
+secured because admins assume they are not reachable from outside.
+Netcat is the go-to tool for interacting with these services directly.

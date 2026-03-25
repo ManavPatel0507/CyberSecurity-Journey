@@ -1,0 +1,98 @@
+---
+
+## Level 16 → Level 17
+**Objective:** Find which port in the range 31000-32000 speaks SSL/TLS
+and accepts the current password to return the next level's credentials.
+Unlike previous levels, the answer is an RSA private key not a password.
+
+**Commands Used:**
+```bash
+cat /etc/bandit_pass/bandit16                         # retrieved current password
+
+nmap -p 31000-32000 localhost                         # scanned port range
+                                                      # found 5 open ports:
+                                                      # 31046, 31518, 31691,
+                                                      # 31790, 31960
+
+nmap -sV -p 31000-32000 localhost                     # service version scan
+                                                      # identified service types
+
+openssl s_client -connect localhost:31790             # connected to target port
+                                                      # got KEYUPDATE response
+
+openssl s_client -connect localhost:31790 -ign_eof    # fixed KEYUPDATE issue
+                                                      # submitted password
+                                                      # received RSA private key
+
+nano ~/bandit17.private                               # saved RSA key on Kali
+chmod 600 ~/bandit17.private                          # set correct permissions
+ssh -i ~/bandit17.private bandit17@bandit.labs.overthewire.org -p 2220
+                                                      # logged into next level
+```
+
+**Nmap Scan Results Explained:**
+| Port | Service | Meaning |
+|---|---|---|
+| 31046 | echo | Plain text — echoes back whatever you send |
+| 31518 | ssl/echo | SSL encrypted but still just echoes back |
+| 31691 | echo | Plain text — echoes back whatever you send |
+| 31790 | ssl/unknown | SSL encrypted, unknown service — **target** |
+| 31960 | echo | Plain text — echoes back whatever you send |
+
+**Why Port 31790 Was the Target:**
+- Only port with SSL + non-echo service
+- nmap fingerprint output showed "Wrong! Please enter the correct
+  current password" — confirming it actively validates passwords
+- All other ports were echo services — just mirror back what you send
+  as the level description warned
+
+**What `-sV` Flag Does in Nmap:**
+- Stands for Service Version Detection
+- Probes each open port deeply to identify what service is running
+- Slower than a basic scan but gives much more useful information
+- Shows service name and version instead of just "unknown"
+- Very commonly used in real pentesting for reconnaissance
+
+**What KEYUPDATE Means:**
+- A TLS 1.3 message — the connection refreshed its encryption keys
+  mid-session
+- Does NOT mean the connection failed or something went wrong
+- `-ign_eof` flag tells OpenSSL to ignore End Of File signals and
+  keep the connection alive so you can still send input
+
+**Two Stage Nmap Approach:**
+```bash
+# Stage 1 — quick scan to find open ports
+nmap -p 31000-32000 localhost
+
+# Stage 2 — version scan only on known open ports (faster)
+nmap -sV -p 31046,31518,31691,31790,31960 localhost
+```
+Scanning specific ports in stage 2 is faster than scanning the
+full range again with -sV.
+
+**What I Learned:**
+- `nmap -p range` scans a range of ports efficiently
+- `nmap -sV` identifies services and versions running on open ports
+- Echo services just mirror back input — not useful, ignore them
+- SSL/unknown service = the interesting one worth investigating
+- KEYUPDATE is a TLS 1.3 behaviour, not an error — use `-ign_eof`
+- This level combined multiple skills: nmap scanning, SSL connections,
+  port enumeration — all core pentesting techniques
+
+**Nmap Flags Learned:**
+```bash
+nmap -p 31000-32000 localhost     # scan port range
+nmap -sV localhost                # service version detection
+nmap -p 80,443,8080 localhost     # scan specific ports
+nmap -sV -p 31000-32000 localhost # combine range + version detection
+```
+
+**Key Takeaway:**
+This level simulates real world port enumeration — a core step in
+every pentest. The process is always the same:
+1. Scan to find open ports
+2. Identify what services are running
+3. Interact with interesting services
+4. Ignore decoys and echo services
+Never manually guess ports when nmap can do the work for you.

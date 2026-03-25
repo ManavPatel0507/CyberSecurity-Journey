@@ -294,5 +294,17 @@ find . -name "readme" -o -name "README"
 
 ---
 
+## 🔵 Netcat (nc)
+
+| Command | What it Does | Example |
+|---|---|---|
+| `nc host port` | Connect to a service on a specific port | `nc localhost 30000` |
+| `nc -l port` | Listen on a port (set up a service) | `nc -l 1234` |
+| `nc -zv host port` | Check if a port is open without sending data | `nc -zv localhost 30000` |
+
+**Netcat vs Nmap:**
+- `nmap` — scans to find open ports
+- `nc` — connects to and communicates with a port
+
 > 💡 This file is updated as new commands are learned.
 > Last updated: March 2026

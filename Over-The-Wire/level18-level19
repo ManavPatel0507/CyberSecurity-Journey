@@ -1,0 +1,73 @@
+---
+
+## Level 18 → Level 19
+**Objective:** Read the `readme` file in the home directory of bandit18
+but `.bashrc` has been modified to automatically log you out the moment
+you log in — printing "Byebye!" and terminating the session immediately.
+
+**Commands Used:**
+```bash
+ssh bandit18@bandit.labs.overthewire.org -p 2220 "cat ~/readme"
+# logs in, runs cat ~/readme, prints output, exits — all in one step
+```
+
+**What is `.bashrc`?**
+- A hidden configuration file in every Linux user's home directory
+- Automatically executed every time a new interactive shell session starts
+- Normally used for setting aliases, environment variables, and
+  custom configurations
+- In this level it was modified to run an exit command on login —
+  a simple but effective way to lock someone out
+- This is a real technique used by attackers to maintain persistence
+  or lock out legitimate users after compromising a system
+
+**Why Normal SSH Login Fails:**
+```
+1. SSH connects to server
+2. Shell starts → .bashrc runs automatically
+3. .bashrc executes exit command → prints "Byebye!"
+4. Session terminates before you can do anything
+```
+
+**The Fix — SSH Command Execution:**
+SSH has a built in feature to run a single command on a remote
+server without starting a full interactive shell session:
+```bash
+ssh user@host -p port "command to run"
+```
+- The command in quotes is sent directly to the server
+- It executes and returns the output to your terminal
+- **.bashrc is bypassed** because no interactive shell is started
+- Session closes automatically after the command finishes
+```bash
+ssh bandit18@bandit.labs.overthewire.org -p 2220 "cat ~/readme"
+# SSH connects → runs cat ~/readme directly
+# output (the password) is returned to your terminal
+# session ends — .bashrc never gets a chance to run
+```
+
+**What I Learned:**
+- `.bashrc` runs automatically on every interactive login — it can
+  be weaponized to lock users out or run malicious commands
+- SSH can execute commands directly without opening an interactive
+  shell — very useful for automation and bypassing restrictions
+- This technique is used constantly in real pentesting and
+  system administration
+- Non-interactive SSH sessions bypass `.bashrc` and `.bash_profile`
+
+**Other Ways This Could Have Been Solved:**
+```bash
+# Use a different shell that doesn't read .bashrc
+ssh bandit18@bandit.labs.overthewire.org -p 2220 -t /bin/sh
+
+# Use SCP to copy the file instead of reading it
+scp -P 2220 bandit18@bandit.labs.overthewire.org:~/readme ~/readme
+```
+
+**Key Takeaway:**
+In real pentesting and forensics, startup files like `.bashrc`,
+`.bash_profile`, and `.profile` are common places attackers hide
+malicious commands — always check these files when investigating
+a compromised system. Equally, knowing how to bypass them using
+SSH command execution is an essential skill for working around
+restricted or tampered environments.

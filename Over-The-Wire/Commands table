@@ -379,6 +379,36 @@ find . -name "readme" -o -name "README"
 
 ---
 
+## 🔵 File Permissions & Setuid
+
+| Command | What it Does | Example |
+|---|---|---|
+| `./binary` | Execute a binary in current directory | `./bandit20-do` |
+| `./binary command` | Run command through a binary | `./bandit20-do whoami` |
+| `find / -perm -4000 2>/dev/null` | Find all setuid binaries on system | — |
+| `ls -la` | View file permissions including setuid | `ls -la` |
+| `whoami` | Show current user | `whoami` |
+
+**Permission Symbols in `ls -la`:**
+| Symbol | Meaning |
+|---|---|
+| `s` in owner execute field | Setuid is set — runs as file owner |
+| `s` in group execute field | Setgid is set — runs as file group |
+| `r` | Read permission |
+| `w` | Write permission |
+| `x` | Execute permission |
+| `-` | Permission not set |
+
+**File Colors in Terminal:**
+| Color | Meaning |
+|---|---|
+| Green | Regular executable |
+| Red | Setuid executable — runs with elevated privileges |
+| Blue | Directory |
+| Cyan | Symbolic link |
+
+---
+
 
 > 💡 This file is updated as new commands are learned.
 > Last updated: March 2026

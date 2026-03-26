@@ -260,6 +260,8 @@ find . -name "readme" -o -name "README"
 | `ssh user@host -p port` | Connect to a remote server | `ssh bandit0@bandit.labs.overthewire.org -p 2220` |
 | `ssh -i keyfile user@host -p port` | SSH using private key file | `ssh -i ~/bandit14.private bandit14@bandit.labs.overthewire.org -p 2220` |
 | `scp -P port user@host:~/file ~/local` | Copy file from remote server to local machine | `scp -P 2220 bandit13@bandit.labs.overthewire.org:~/sshkey.private ~/bandit14.private` |
+| `ssh user@host -p port "command"` | Run a command remotely without interactive login | `ssh bandit18@bandit.labs.overthewire.org -p 2220 "cat ~/readme"` |
+| `ssh user@host -p port -t /bin/sh` | Login using different shell, bypassing .bashrc | `ssh bandit18@bandit.labs.overthewire.org -p 2220 -t /bin/sh` |
 
 ---
 
@@ -360,6 +362,20 @@ find . -name "readme" -o -name "README"
 | `c` | Line changed between files |
 | `d` | Line deleted from first file |
 | `a` | Line added in second file |
+
+---
+
+## 🔵 Important Linux Startup Files
+
+| File | When it Runs |
+|---|---|
+| `.bashrc` | Every time a new interactive shell starts |
+| `.bash_profile` | When a user logs in |
+| `.profile` | When a user logs in (non-bash shells) |
+| `/etc/profile` | System wide — runs for all users on login |
+
+⚠️ In pentesting always check these files on a compromised system
+— common hiding place for malicious commands and backdoors.
 
 ---
 

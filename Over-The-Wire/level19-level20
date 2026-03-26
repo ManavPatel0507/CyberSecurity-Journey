@@ -1,0 +1,85 @@
+---
+
+## Level 19 → Level 20
+**Objective:** Use a setuid binary in the home directory to read
+bandit20's password file which bandit19 doesn't have permission
+to access directly.
+
+**Commands Used:**
+```bash
+ls                                          # found bandit20-do binary
+                                            # shown in red = executable file
+file bandit20-do                            # confirmed setuid ELF executable
+./bandit20-do                               # ran without arguments —
+                                            # showed usage instructions
+./bandit20-do whoami                        # confirmed it runs as bandit20
+cat /etc/bandit_pass/bandit20               # permission denied —
+                                            # running as bandit19
+./bandit20-do cat /etc/bandit_pass/bandit20 # ran cat as bandit20 —
+                                            # returned the password
+```
+
+**What is Setuid?**
+- Setuid (Set User ID) is a **Linux file permission** — not a command
+- When a binary has setuid permission set, it runs with the
+  privileges of the file's **owner** instead of the user executing it
+- `bandit20-do` is owned by bandit20 and has setuid set — so
+  anyone who runs it temporarily gets bandit20's privileges
+- This is why `./bandit20-do whoami` returns `bandit20` even
+  though you are logged in as bandit19
+
+**How Setuid Works:**
+```
+Normal execution:
+You (bandit19) → run command → command runs as bandit19
+
+Setuid execution:
+You (bandit19) → run setuid binary → binary runs as bandit20
+                                     (the file's owner)
+```
+
+**Why `cat /etc/bandit_pass/bandit20` Failed Directly:**
+- Running `cat` directly = running as bandit19
+- `/etc/bandit_pass/bandit20` is only readable by bandit20
+- bandit19 has no permission to read it → Permission Denied
+
+**Why `./bandit20-do cat /etc/bandit_pass/bandit20` Worked:**
+- Running cat through `bandit20-do` = running as bandit20
+- bandit20 has permission to read its own password file
+- Password returned successfully
+
+**Identifying Setuid Files:**
+```bash
+file bandit20-do          # shows "setuid ELF" in the output
+ls -la                    # setuid files show 's' in permissions
+                          # example: -rwsr-xr-x (s = setuid set)
+find / -perm -4000 2>/dev/null  # find ALL setuid files on system
+```
+
+**What the Red Highlight Means:**
+- In Kali and most Linux terminals, executables are shown in green
+- Setuid executables are shown in **red** as a visual warning
+- Red = this file runs with elevated privileges — be careful
+
+**What I Learned:**
+- Setuid is a file permission not a command
+- Setuid binaries run as their owner regardless of who executes them
+- You can pass any command as an argument to a setuid binary
+- `whoami` is useful for confirming which user you're running as
+- Finding setuid binaries is a key privilege escalation technique
+  in real pentesting
+
+**Real Pentesting Relevance:**
+Finding misconfigured setuid binaries is one of the most common
+Linux privilege escalation techniques. If a setuid binary owned
+by root can be exploited or abused, it can give you root access.
+Always run this when looking for privesc opportunities:
+```bash
+find / -perm -4000 2>/dev/null    # find all setuid binaries on system
+```
+
+**Key Takeaway:**
+Setuid binaries are a double edged sword — they are sometimes
+necessary for legitimate purposes but misconfigured ones are
+a major security risk. In pentesting, finding an exploitable
+setuid binary is often the path to full system compromise.

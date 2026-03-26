@@ -1,0 +1,67 @@
+---
+
+## Level 17 → Level 18
+**Objective:** Find the one line that is different between
+`passwords.old` and `passwords.new` — that different line in
+`passwords.new` is the next password.
+
+**Commands Used:**
+```bash
+ls                                          # found passwords.old
+                                            # and passwords.new
+diff passwords.old passwords.new            # standard way — shows
+                                            # exact differences
+                                            # between two files
+
+grep -Fxvf passwords.old passwords.new      # alternative way —
+                                            # shows lines in
+                                            # passwords.new that
+                                            # don't exist in
+                                            # passwords.old
+```
+
+**The Standard Way — `diff`:**
+```bash
+diff passwords.old passwords.new
+```
+- `diff` is a tool built specifically for comparing files
+- Output uses symbols to show what changed:
+  - `<` = line only in the first file (passwords.old)
+  - `>` = line only in the second file (passwords.new)
+  - `c` = line was changed between files
+  - `d` = line was deleted
+  - `a` = line was added
+- The line marked with `>` in passwords.new is the password
+
+**The Alternative Way — `grep`:**
+```bash
+grep -Fxvf passwords.old passwords.new
+```
+Breaking down each flag:
+- `-F` = treat patterns as fixed strings, not regex
+- `-x` = match whole lines only, not partial matches
+- `-v` = invert match — show lines that do NOT match
+- `-f` = read patterns from a file (passwords.old)
+
+So the full command means:
+"Show me lines in passwords.new that do NOT appear in passwords.old"
+
+**`diff` vs `grep` for File Comparison:**
+| Tool | Best For |
+|---|---|
+| `diff` | Comparing two files — purpose built, cleaner output |
+| `grep -Fxvf` | Filtering unique lines between files — more flexible |
+
+**What I Learned:**
+- `diff` is the standard tool for comparing two files directly
+- `grep -Fxvf` is a clever alternative using grep's filtering
+- In pentesting, finding differences between files is very useful
+  for spotting config changes, password rotations, and file tampering
+- Both commands work — `diff` is simpler and more readable
+
+**Key Takeaway:**
+File comparison is a commonly used technique in both pentesting
+and forensics. If you find two versions of the same file on a
+compromised system, `diff` instantly shows you what changed —
+useful for spotting backdoors added to config files, password
+changes, or code modifications.

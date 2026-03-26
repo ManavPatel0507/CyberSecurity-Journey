@@ -345,5 +345,24 @@ find . -name "readme" -o -name "README"
 
 ---
 
+## 🔵 File Comparison
+
+| Command | What it Does | Example |
+|---|---|---|
+| `diff file1 file2` | Show differences between two files | `diff passwords.old passwords.new` |
+| `grep -Fxvf file1 file2` | Show lines in file2 not present in file1 | `grep -Fxvf passwords.old passwords.new` |
+
+**`diff` Output Symbols:**
+| Symbol | Meaning |
+|---|---|
+| `<` | Line only in first file |
+| `>` | Line only in second file |
+| `c` | Line changed between files |
+| `d` | Line deleted from first file |
+| `a` | Line added in second file |
+
+---
+
+
 > 💡 This file is updated as new commands are learned.
 > Last updated: March 2026

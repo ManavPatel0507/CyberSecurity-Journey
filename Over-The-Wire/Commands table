@@ -308,6 +308,15 @@ find . -name "readme" -o -name "README"
 - `nmap` — scans to find open ports
 - `nc` — connects to and communicates with a port
 
+| `nc -l port` | Listen on a port for incoming connections | `nc -l 1234` |
+| `nc -lvp port` | Listen with verbose output on a port | `nc -lvp 1234` |
+
+**Netcat Modes:**
+| Mode | Command | Use Case |
+|---|---|---|
+| Client | `nc host port` | Connect to a service |
+| Listener/Server | `nc -l port` | Wait for incoming connection |
+
 ---
 
 ---

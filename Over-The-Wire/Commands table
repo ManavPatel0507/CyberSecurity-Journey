@@ -418,6 +418,32 @@ find . -name "readme" -o -name "README"
 
 ---
 
+## 🔵 Cron Jobs
+
+| Command | What it Does | Example |
+|---|---|---|
+| `ls /etc/cron.d/` | List all cron job configs | `ls /etc/cron.d/` |
+| `cat /etc/cron.d/*` | Read all cron job configs | `cat /etc/cron.d/*` |
+| `crontab -l` | List current user's cron jobs | `crontab -l` |
+| `cat /etc/crontab` | Read system wide cron config | `cat /etc/crontab` |
+
+**Cron Schedule Quick Reference:**
+| Schedule | Meaning |
+|---|---|
+| `* * * * *` | Every minute |
+| `0 * * * *` | Every hour |
+| `0 0 * * *` | Every day at midnight |
+| `*/5 * * * *` | Every 5 minutes |
+| `@reboot` | Once at system startup |
+
+**Privilege Escalation via Cron — What to Look For:**
+- Cron jobs running as root or privileged users
+- Scripts executed by cron that are writable by you
+- Cron jobs writing sensitive data to world-readable locations
+- Wildcard usage in cron scripts (can be exploited)
+
+---
+
 
 > 💡 This file is updated as new commands are learned.
 > Last updated: March 2026

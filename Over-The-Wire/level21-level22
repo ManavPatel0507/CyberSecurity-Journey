@@ -1,0 +1,100 @@
+---
+
+## Level 21 → Level 22
+**Objective:** Find a cron job running automatically on the server
+and trace it to find where it stores the next level's password.
+
+**Commands Used:**
+```bash
+ls                              # nothing in home directory
+ls -a                           # only default files, one with no permissions
+cd /etc/cron.d                  # moved into cron jobs directory
+ls                              # listed all cron job files
+file *                          # checked file types of all files
+cat *                           # read all readable files at once
+                                # found cronjob_bandit22 running every minute
+cat cronjob_bandit22            # confirmed script path:
+                                # /usr/bin/cronjob_bandit22.sh
+cd /usr/bin                     # moved to bin directory
+cat cronjob_bandit22.sh         # read the script — revealed:
+                                # password being written to /tmp/ file
+cd /tmp                         # moved to tmp directory
+cat t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv  # read the file — found password
+```
+
+**What is Cron?**
+- Cron is Linux's built in **time-based job scheduler**
+- Runs commands or scripts automatically at set intervals
+- Used for backups, updates, cleanup tasks, and maintenance
+- Configuration files stored in `/etc/cron.d/`
+- In pentesting, cron jobs are a goldmine — they often run as
+  privileged users and can reveal sensitive operations
+
+**Cron Syntax Explained:**
+```
+* * * * * user /path/to/script
+│ │ │ │ │
+│ │ │ │ └── Day of week (0-7, 0 and 7 = Sunday)
+│ │ │ └──── Month (1-12)
+│ │ └────── Day of month (1-31)
+│ └──────── Hour (0-23)
+└────────── Minute (0-59)
+```
+
+**Common Cron Schedule Examples:**
+| Schedule | Meaning |
+|---|---|
+| `* * * * *` | Every minute |
+| `0 * * * *` | Every hour on the hour |
+| `0 0 * * *` | Every day at midnight |
+| `0 0 * * 0` | Every Sunday at midnight |
+| `30 3 * * 0` | Every Sunday at 3:30am |
+| `*/5 * * * *` | Every 5 minutes |
+| `@reboot` | Once at system startup |
+
+**What the Cron Job Was Doing:**
+```bash
+# cronjob_bandit22.sh ran every minute as bandit22:
+chmod 644 /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+# sets file permissions so anyone can read it
+
+cat /etc/bandit_pass/bandit22 > /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+# copies bandit22 password into that tmp file every minute
+```
+
+**How the Script Was Found:**
+```
+/etc/cron.d/cronjob_bandit22     ← cron config file
+    → points to /usr/bin/cronjob_bandit22.sh   ← the script
+        → writes password to /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+            → cat that file → password found
+```
+
+**What `&> /dev/null` Means:**
+- `&>` redirects both standard output AND error messages
+- `/dev/null` discards everything sent to it
+- So `&> /dev/null` = silences all output from the script
+- Used so cron jobs don't spam the system with output
+
+**What I Learned:**
+- `/etc/cron.d/` stores scheduled task configurations
+- Cron jobs run as a specific user — check which user carefully
+- Scripts run by cron can have access to privileged files
+- `cat *` is useful for reading all files in a directory at once
+- Cron jobs that write to `/tmp/` are a common security issue —
+  anyone can read files there if permissions allow
+
+**Real Pentesting Relevance:**
+Checking cron jobs is a standard step in Linux privilege escalation:
+- Cron jobs running as root are prime targets
+- Writable scripts run by cron = instant privilege escalation
+- Always check `/etc/cron.d/`, `/etc/crontab`, and user crontabs
+
+**Key Takeaway:**
+Always check cron jobs on a system you have access to — they
+frequently run as privileged users, write sensitive data to
+accessible locations, or execute scripts that can be modified
+for privilege escalation. The methodology is always:
+1. Find the cron job in `/etc/cron.d/`
+2. Read the script it executes
+3. Follow the trail to see what it does and where it writes

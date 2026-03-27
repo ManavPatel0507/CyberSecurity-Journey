@@ -1,0 +1,88 @@
+---
+
+## Level 20 → Level 21
+**Objective:** Use a setuid binary called `suconnect` that connects to
+a port you specify, reads a password from it, and if correct returns
+the next level's password. Requires two terminal windows simultaneously.
+
+**Commands Used:**
+```bash
+# Both terminals connected to bandit20 server
+
+# Terminal 1 — set up netcat listener
+nc -l 1234                              # listens on port 1234
+                                        # waits for incoming connection
+                                        # type bandit20 password when connected
+                                        # receives bandit21 password back
+
+# Terminal 2 — run the setuid binary
+ls                                      # found suconnect in red (setuid)
+cat suconnect                           # returned unreadable binary data
+                                        # confirmed it is a binary not text
+./suconnect 1234                        # connects to localhost port 1234
+                                        # reads password from the listener
+                                        # validates against bandit20 password
+                                        # sends back bandit21 password if correct
+```
+
+**What `suconnect` Does Step by Step:**
+```
+1. You run ./suconnect 1234
+2. Binary connects to localhost port 1234
+3. Reads whatever is sent on that port
+4. Compares it to /etc/bandit_pass/bandit20
+5. If correct → sends bandit21 password back
+6. If wrong → closes connection
+```
+
+**Terminal Output Explained:**
+- Terminal 1 (netcat): showed the bandit21 password directly
+- Terminal 2 (suconnect): showed:
+```
+Read: [bandit20 password]
+Password matches, sending next password
+```
+- Both terminals confirm the password exchange happened correctly
+
+**Why Two Terminals Were Needed:**
+- `suconnect` is the **client** — it connects TO a port
+- `nc -l` is the **server** — it listens ON a port
+- Both need to run simultaneously on the same server
+- Without the listener running first, suconnect has nothing to
+  connect to and fails immediately
+
+**Why Both Terminals Must Be on the Bandit Server:**
+- `suconnect` connects to `localhost` — meaning the bandit server
+- A listener on your local Kali machine would be unreachable
+- Both terminals must be SSH'd into bandit20 simultaneously
+
+**Port Choice:**
+- Port 1234 was chosen arbitrarily — any unused port works
+- Avoid ports below 1024 — those require root privileges to bind
+- Common choices for testing: 1234, 4444, 9999, 12345
+
+**What I Learned:**
+- Netcat's `-l` flag turns it into a server/listener
+- The order matters — always start the listener BEFORE running
+  the client, otherwise the connection will be refused
+- Setuid binaries can be clients that connect to ports
+- Two terminal workflow is common in pentesting for
+  setting up listeners and connecting simultaneously
+- `cat` on a binary returns unreadable data — always use
+  `file` to check what type of file something is first
+
+**Client vs Server in Networking:**
+| Role | Tool Used | What it Does |
+|---|---|---|
+| Server/Listener | `nc -l port` | Waits for incoming connections |
+| Client | `nc host port` or `./suconnect port` | Connects to the listener |
+
+**Key Takeaway:**
+This level demonstrates a core pentesting concept — setting up
+listeners to catch incoming connections. In real pentesting this
+is used constantly for:
+- Catching reverse shells from compromised machines
+- Transferring files between systems
+- Testing if a port is reachable from a target machine
+Always start the listener before the client — the server must
+exist before the client can connect to it.

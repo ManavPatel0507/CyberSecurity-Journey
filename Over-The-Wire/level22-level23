@@ -1,0 +1,107 @@
+---
+
+## Level 22 → Level 23
+**Objective:** Find and analyze a cron job running as bandit23,
+reverse engineer the filename it generates, and read the password
+it writes to /tmp/.
+
+**Commands Used:**
+```bash
+ls                                        # nothing in home directory
+ls -a                                     # only default files
+cd /etc/cron.d                            # moved to cron directory
+ls                                        # listed all cron files
+file *                                    # checked file types
+cat cronjob_bandit23                      # found script path and schedule
+cat /usr/bin/cronjob_bandit23.sh          # read the script contents
+
+# Calculated the hash as bandit22 first (wrong — just for understanding)
+myname=$(whoami)                          # set myname = bandit22
+mytarget=$(echo I am user $myname | md5sum | cut -d ' ' -f 1)
+echo "Copying passwordfile /etc/bandit_pass/$myname to /tmp/$mytarget"
+cat /etc/bandit_pass/$myname > /tmp/$mytarget
+cat /tmp/8169b67bd894ddbb4412f91573b38db3 # returned bandit22 password
+
+# Correct approach — hardcode bandit23 to get the right hash
+echo I am user bandit23 | md5sum | cut -d ' ' -f 1
+# returned: 8ca319486bfbbc3663ea0fbe81326349
+
+cat /tmp/8ca319486bfbbc3663ea0fbe81326349 # found bandit23 password
+```
+
+**What the Cron Script Was Doing:**
+```bash
+#!/bin/bash
+myname=$(whoami)                          # gets username of whoever runs it
+mytarget=$(echo I am user $myname | md5sum | cut -d ' ' -f 1)
+# creates MD5 hash of "I am user bandit23" → becomes the filename
+echo "Copying passwordfile /etc/bandit_pass/$myname to /tmp/$mytarget"
+cat /etc/bandit_pass/$myname > /tmp/$mytarget
+# writes bandit23 password into /tmp/<hash> every minute
+```
+
+**How the Pipeline Works:**
+```bash
+echo I am user bandit23 | md5sum | cut -d ' ' -f 1
+```
+Step by step:
+- `echo I am user bandit23` → generates the string "I am user bandit23"
+- `| md5sum` → converts that string into an MD5 hash
+  output looks like: `8ca319486bfbbc3663ea0fbe81326349  -`
+- `| cut -d ' ' -f 1` → cuts the output by spaces and takes
+  only the first part (the hash itself, removing the trailing `-`)
+- Final result: `8ca319486bfbbc3663ea0fbe81326349`
+
+**What is MD5?**
+- MD5 (Message Digest 5) is a hashing algorithm
+- Takes any input and produces a fixed 32 character hex string
+- Same input ALWAYS produces the same hash
+- Used for checksums, file verification, and (weakly) for passwords
+- Not secure for passwords anymore — can be cracked relatively easily
+- In this level it was used to generate a consistent unique filename
+
+**What `echo` Was Actually Doing Here:**
+- `echo` normally just prints text to the screen
+- Here it was used to **generate a string as input** for the next
+  command via the pipe `|`
+- This is a very common pattern in Linux:
+  `echo "some text" | some_command`
+- `echo` feeds text into another command without needing a file
+
+**The Key Insight of This Level:**
+- The cron script runs as bandit23 so `whoami` returns `bandit23`
+- You are bandit22 so running the script directly gives bandit22's hash
+- Solution: manually calculate what the hash would be if `whoami`
+  returned `bandit23` by hardcoding it
+- You don't need bandit23's privileges — just predict what the
+  script produces when running as bandit23
+
+**Why Absolute Path `/tmp/hash` Was Required:**
+- Without `/tmp/` prefix Linux looks in your current directory
+- `cat 8ca319486bfbbc3663ea0fbe81326349` looks in current directory
+- `cat /tmp/8ca319486bfbbc3663ea0fbe81326349` looks from root
+- Always use full absolute paths when referencing files in other
+  directories
+
+**What I Learned:**
+- Cron jobs can be analyzed and their output predicted without
+  actually running them as that user
+- MD5 hashing is deterministic — same input always = same output
+- `echo` is commonly used to pipe strings into other commands
+- Absolute paths (`/tmp/file`) vs relative paths (`file`) matter
+- Reading and understanding scripts is more important than just
+  running commands blindly
+
+**Real Pentesting Relevance:**
+- Analyzing cron scripts to predict file locations is a real
+  privilege escalation technique
+- If a cron job writes sensitive data to a predictable location
+  in `/tmp/` it can be read by any user
+- Always analyze what variables a script uses and what values
+  they would have when run as a privileged user
+
+**Key Takeaway:**
+You don't need to BE a user to predict what their scripts produce.
+If you can read the script and understand its logic, you can
+calculate the output yourself. This kind of script analysis and
+logical thinking is the core of privilege escalation in pentesting.

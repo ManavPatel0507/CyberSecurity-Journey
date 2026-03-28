@@ -477,6 +477,35 @@ find . -name "readme" -o -name "README"
 
 ---
 
+## 🔵 Bash Scripting Basics
+
+| Concept | Syntax | Example |
+|---|---|---|
+| Shebang line | `#!/bin/bash` | Always first line of script |
+| Make executable | `chmod 777 script.sh` | `chmod 777 myscript.sh` |
+| Run a script | `./script.sh` | `./myscript.sh` |
+| Write output to file | `command > file` | `cat /etc/passwd > /tmp/out.txt` |
+| Variable assignment | `name=$(command)` | `myname=$(whoami)` |
+
+**Basic Script Template:**
+```bash
+#!/bin/bash
+# Your commands go here
+command1
+command2 > /tmp/output.txt
+chmod 777 /tmp/output.txt
+```
+
+**Script Writing Workflow:**
+1. Create script in `/tmp/` using nano
+2. Add `#!/bin/bash` as first line
+3. Add your commands
+4. Save with `Ctrl+X → Y → Enter`
+5. Make executable with `chmod 777`
+6. Run or deploy as needed
+
+---
+
 
 > 💡 This file is updated as new commands are learned.
 > Last updated: March 2026

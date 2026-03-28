@@ -1,0 +1,125 @@
+---
+
+## Level 23 → Level 24
+**Objective:** Analyze a cron job that executes scripts placed in a
+specific directory, write your own script to extract bandit24's
+password, and let the cron job run it with elevated privileges.
+
+**Commands Used:**
+```bash
+cd /etc/cron.d                          # moved to cron directory
+cat cronjob_bandit24                    # found script path and schedule
+cat /usr/bin/cronjob_bandit24.sh        # read the cron script contents
+
+nano /tmp/myscript.sh                   # created our own script in /tmp/
+chmod 777 /tmp/myscript.sh             # made script executable by everyone
+cp /tmp/myscript.sh /var/spool/bandit24/foo/  # placed script in watched dir
+                                        # waited up to 1 minute for cron
+cat /tmp/mypassword.txt                 # read the password written by cron
+```
+
+**What the Cron Script Was Doing:**
+```bash
+cd /var/spool/$myname/foo
+# moves into /var/spool/bandit24/foo/
+
+for i in * .;
+do
+    if [ "$i" != "." -a "$i" != ".." ];
+    then
+        owner="$(stat --format "%U" ./$i)"
+        if [ "${owner}" = "bandit23" ]; then
+            timeout -s 9 60 ./$i    # executes file if owned by bandit23
+        fi
+        rm -f ./$i                  # deletes file after executing
+    fi
+done
+```
+
+In simple terms every minute it:
+1. Goes into `/var/spool/bandit24/foo/`
+2. Checks every file in that directory
+3. If the file is **owned by bandit23** → executes it as bandit24
+4. Deletes the file after running regardless of result
+
+**The Script We Wrote:**
+```bash
+#!/bin/bash
+cat /etc/bandit_pass/bandit24 > /tmp/mypassword.txt
+chmod 777 /tmp/mypassword.txt
+```
+
+Line by line:
+- `#!/bin/bash` — called a "shebang" — tells Linux this is a bash
+  script and which interpreter to use to run it
+- `cat /etc/bandit_pass/bandit24 > /tmp/mypassword.txt` — reads
+  bandit24's password and writes it to a file in /tmp/
+- `chmod 777 /tmp/mypassword.txt` — makes the output file readable
+  by everyone including bandit23
+
+**Why Each Step Was Necessary:**
+
+**Why create script in /tmp/ first:**
+- The cron job deletes files from `/var/spool/bandit24/foo/`
+  immediately after running them
+- Creating and editing directly there risks the file being
+  deleted before it's ready
+- `/tmp/` is our safe workspace — create and test there first
+
+**Why `chmod 777` on the script:**
+- The cron job checks the file is owned by bandit23 ✅
+- But it also needs execute permission to actually run it
+- Without `chmod 777` the cron job finds the file but can't execute it
+
+**Why `chmod 777` inside the script:**
+- The password file gets created by bandit24 (cron runs as bandit24)
+- bandit24 becomes the owner of `/tmp/mypassword.txt`
+- Without chmod inside the script, bandit23 couldn't read the output
+- `777` gives everyone read access so bandit23 can cat the file
+- `644` would have been cleaner but `777` works fine for CTF purposes
+
+**Permission Recap for This Level:**
+| File | Permission Needed | Why |
+|---|---|---|
+| `myscript.sh` | `777` | Cron needs to execute it |
+| `mypassword.txt` | `777` | bandit23 needs to read it |
+
+**What is a Shebang (`#!/bin/bash`)?**
+- First line of every bash script
+- Tells the system which interpreter to use to run the script
+- `#!` = shebang, `/bin/bash` = path to bash interpreter
+- Without it the system doesn't know how to execute the script
+
+**The Exploit Chain:**
+```
+bandit23 writes script → copies to /var/spool/bandit24/foo/
+    → cron runs as bandit24 every minute
+    → finds script owned by bandit23 → executes it as bandit24
+    → script reads bandit24 password → writes to /tmp/
+    → bandit23 reads the output file → gets the password
+```
+
+**What I Learned:**
+- Cron jobs that execute user-placed scripts are a major security risk
+- Writing your own script and letting a privileged process run it
+  is a classic privilege escalation technique
+- Always create scripts in `/tmp/` first before moving them
+- The shebang `#!/bin/bash` is required at the top of every script
+- File ownership matters — cron checked owner before executing
+- chmod affects who can read the OUTPUT file, not just the script
+
+**Real Pentesting Relevance:**
+This level demonstrates a real world privilege escalation technique
+called **cron job hijacking**. If a cron job running as root or
+a privileged user executes files from a directory you can write
+to — you can place your own malicious script there and have it
+run with elevated privileges. Always look for:
+- Writable directories that cron jobs read from
+- Cron scripts with weak permissions that you can modify
+- Cron jobs that use wildcards in paths
+
+**Key Takeaway:**
+Any time a privileged process executes files that an unprivileged
+user can place or modify — that's a privilege escalation opportunity.
+The ability to write a simple bash script and understand file
+permissions is what makes this exploitable.

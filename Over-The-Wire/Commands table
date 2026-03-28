@@ -444,6 +444,39 @@ find . -name "readme" -o -name "README"
 
 ---
 
+## 🔵 Hashing Commands
+
+| Command | What it Does | Example |
+|---|---|---|
+| `echo "text" \| md5sum` | Generate MD5 hash of a string | `echo "hello" \| md5sum` |
+| `md5sum file` | Generate MD5 hash of a file | `md5sum data.txt` |
+| `echo "text" \| sha256sum` | Generate SHA256 hash of a string | `echo "hello" \| sha256sum` |
+| `sha256sum file` | Generate SHA256 hash of a file | `sha256sum data.txt` |
+
+**Common Hashing Algorithms:**
+| Algorithm | Output Length | Security |
+|---|---|---|
+| MD5 | 32 characters | Weak — do not use for passwords |
+| SHA1 | 40 characters | Weak — being phased out |
+| SHA256 | 64 characters | Strong — widely used |
+| SHA512 | 128 characters | Very strong |
+
+---
+
+## 🔵 Text Processing — cut command
+
+| Command | What it Does | Example |
+|---|---|---|
+| `cut -d ' ' -f 1` | Split by space, take first field | `echo "hello world" \| cut -d ' ' -f 1` |
+| `cut -d ':' -f 1` | Split by colon, take first field | `cut -d ':' -f 1 /etc/passwd` |
+| `cut -d ' ' -f 2` | Split by space, take second field | `echo "hello world" \| cut -d ' ' -f 2` |
+
+**`cut` Flag Explanation:**
+- `-d` = delimiter — the character to split by
+- `-f` = field — which section to keep after splitting
+
+---
+
 
 > 💡 This file is updated as new commands are learned.
 > Last updated: March 2026

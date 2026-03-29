@@ -541,6 +541,36 @@ done | nc localhost 30002 > output.txt
 
 ---
 
+## 🔵 Restricted Shell Escape Techniques
+
+| Command | What it Does | Context |
+|---|---|---|
+| `v` | Open vi editor from within more/less | Inside more/less pager |
+| `:shell` | Spawn a shell from within vi | Inside vi/vim |
+| `:set shell=/bin/bash` | Set shell to bash in vi | Inside vi/vim |
+| `:! command` | Run single command from vi | Inside vi/vim |
+
+---
+
+## 🔵 User Information
+
+| Command | What it Does | Example |
+|---|---|---|
+| `cat /etc/passwd` | Show all users and their shells | `cat /etc/passwd` |
+| `cat /etc/passwd \| grep user` | Find specific user info | `cat /etc/passwd \| grep bandit26` |
+| `whoami` | Show current username | `whoami` |
+| `id` | Show user ID, group ID and groups | `id` |
+
+**`/etc/passwd` Format:**
+```
+username:x:UID:GID:description:home_directory:shell
+```
+- Last field = user's assigned shell
+- `/bin/bash` = normal bash shell
+- Anything else = restricted or custom shell
+
+---
+
 
 > 💡 This file is updated as new commands are learned.
 > Last updated: March 2026

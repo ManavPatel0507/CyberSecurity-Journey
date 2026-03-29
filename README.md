@@ -1,12 +1,10 @@
 # 🛡️ Cybersecurity Journey
-
 **👤 Manav Patel**  
 3rd Year B.E. Computer Science & Design Engineering Student, India
 
 ---
 
 ## 👋 About This Repo
-
 This is my personal documentation of learning cybersecurity from scratch.
 Every room, machine, and concept I work through gets written up here.
 Started: March 2026
@@ -14,7 +12,6 @@ Started: March 2026
 ---
 
 ## 🎯 Goals
-
 - 🐛 Bug bounty hunting
 - 💼 Freelancing in cybersecurity
 - 🚀 Full time career in ethical hacking / penetration testing
@@ -22,7 +19,6 @@ Started: March 2026
 ---
 
 ## 🗺️ Learning Path
-
 | Stage | Topic | Status |
 |---|---|---|
 | 1 | TryHackMe - Pre Security Path (Rooms 1–4) | ✅ Completed |
@@ -36,9 +32,8 @@ Started: March 2026
 ---
 
 ## 🏆 Milestones
-
 - ✅ **March 2026** — Completed TryHackMe Pre Security Path (4 rooms)
-- ✅ **March 2026** — Completed all 26 levels of OverTheWire Bandit
+- ✅ **March 2026** — Completed all 33 levels of OverTheWire Bandit
 - 🔄 **Now** — Starting TryHackMe Jr Penetration Tester path
 
 ---
@@ -47,11 +42,11 @@ Started: March 2026
 ```
 cybersecurity-journey/
 │
-├── Over-The-Wire/          # All 26 Bandit level writeups
+├── Over-The-Wire/          # All 33 Bandit level writeups
 │   ├── level00-level01
 │   ├── level01-level02
 │   ├── ...
-│   ├── level25-level26
+│   ├── level32-level33
 │   └── Commands table      # Full command reference
 │
 ├── tryhackme/              # TryHackMe room writeups

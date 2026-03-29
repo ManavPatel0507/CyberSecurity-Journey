@@ -583,6 +583,16 @@ username:x:UID:GID:description:home_directory:shell
 | `git checkout branch` | Switch to a different branch | `git checkout dev` |
 | `git diff` | Show changes between commits | `git diff` |
 | `git status` | Show current repo status | `git status` |
+| `git log` | Show full commit history | `git log` |
+| `git log --oneline` | Show condensed commit history | `git log --oneline` |
+| `git show commitID` | Show changes made in a specific commit | `git show abc1234` |
+| `git clone url foldername` | Clone into custom named folder | `git clone url myrepo` |
+
+**Reading `git show` Output:**
+| Symbol | Meaning |
+|---|---|
+| `-` (red) | Line that was removed in this commit |
+| `+` (green) | Line that was added in this commit |
 
 **Git SSH URL Format:**
 ```

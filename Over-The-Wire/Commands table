@@ -571,6 +571,32 @@ username:x:UID:GID:description:home_directory:shell
 
 ---
 
+## 🔵 Git Commands
+
+| Command | What it Does | Example |
+|---|---|---|
+| `git clone url` | Clone a remote repository locally | `git clone ssh://user@host:port/path` |
+| `git log` | Show commit history | `git log` |
+| `git log --oneline` | Show condensed commit history | `git log --oneline` |
+| `git show commitID` | Show contents of a specific commit | `git show abc1234` |
+| `git branch -a` | List all branches | `git branch -a` |
+| `git checkout branch` | Switch to a different branch | `git checkout dev` |
+| `git diff` | Show changes between commits | `git diff` |
+| `git status` | Show current repo status | `git status` |
+
+**Git SSH URL Format:**
+```
+ssh://username@hostname:port/path/to/repo
+```
+
+**Common Places Sensitive Data Hides in Git Repos:**
+- README files
+- Config files (.env, config.yml, settings.py)
+- Git commit history (even deleted files)
+- Other branches (dev, staging, test)
+
+---
+
 
 > 💡 This file is updated as new commands are learned.
 > Last updated: March 2026

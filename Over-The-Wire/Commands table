@@ -587,6 +587,18 @@ username:x:UID:GID:description:home_directory:shell
 | `git log --oneline` | Show condensed commit history | `git log --oneline` |
 | `git show commitID` | Show changes made in a specific commit | `git show abc1234` |
 | `git clone url foldername` | Clone into custom named folder | `git clone url myrepo` |
+| `git branch -a` | List all local and remote branches | `git branch -a` |
+| `git checkout branch` | Switch to a different branch | `git checkout dev` |
+| `git diff branch1 branch2` | Compare two branches | `git diff master dev` |
+
+**Common Branch Names to Check in Pentesting:**
+| Branch | Often Contains |
+|---|---|
+| `master` / `main` | Production code — usually sanitized |
+| `dev` / `development` | Work in progress — often has credentials |
+| `staging` | Test environment configs |
+| `feature/xxx` | New features — may have hardcoded test data |
+| `sploits-dev` | Exploit development — sensitive by nature |
 
 **Reading `git show` Output:**
 | Symbol | Meaning |

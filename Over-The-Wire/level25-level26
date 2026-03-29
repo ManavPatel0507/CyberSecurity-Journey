@@ -1,0 +1,128 @@
+---
+
+## Level 25 → Level 26
+**Objective:** Break out of a restricted custom shell assigned to
+bandit26 that automatically disconnects you on login.
+
+**Commands Used:**
+```bash
+# On bandit25 server:
+ls                                      # found bandit26.sshkey RSA key
+cat /etc/passwd | grep bandit26         # found bandit26's shell = /usr/bin/showtext
+cat /usr/bin/showtext                   # read the custom shell script
+
+# On Kali machine:
+nano ~/bandit26.private                 # created file and pasted RSA key
+chmod 600 ~/bandit26.private            # set correct key permissions
+ssh -i ~/bandit26.private bandit26@bandit.labs.overthewire.org -p 2220
+                                        # connected — immediately disconnected
+
+# Resize terminal to ~5 lines tall then reconnect:
+ssh -i ~/bandit26.private bandit26@bandit.labs.overthewire.org -p 2220
+                                        # more paused showing "-- More --%"
+
+# Inside more pager:
+v                                       # opened vi text editor from within more
+
+# Inside vi:
+:set shell=/bin/bash                    # set shell to bash
+:shell                                  # opened bash shell as bandit26
+
+# Inside bandit26 shell:
+cat /etc/bandit_pass/bandit26           # retrieved bandit26 password
+```
+
+**What `/etc/passwd` Contains:**
+- Stores information about every user on the system
+- Format: `username:x:UID:GID:description:home:shell`
+- The last field is the user's assigned shell
+- bandit26's entry showed `/usr/bin/showtext` instead of `/bin/bash`
+- This is how you identify a restricted or custom shell
+
+**What the `showtext` Script Did:**
+```bash
+#!/bin/sh
+export TERM=linux
+exec more ~/text.txt    # displays text.txt using the more pager
+exit 0                  # exits immediately after
+```
+- Runs `more` to display a text file
+- Then exits — closing the connection instantly
+- Designed to show a message and kick you out
+
+**What is `more`?**
+- A terminal pager — displays file contents one screen at a time
+- If the file fits entirely on screen → exits automatically
+- If the file is too large for the screen → pauses and waits
+- This pause is what keeps the connection alive
+- The `--More--%` prompt means more is waiting for your input
+
+**The Terminal Size Trick:**
+- Full size terminal → entire text.txt fits on screen → more exits
+  → connection closes immediately
+- Small terminal (5-6 lines) → text.txt doesn't fit → more pauses
+  → connection stays alive → you can interact
+
+**What `v` Does Inside `more`:**
+- `more` has built in keyboard shortcuts
+- Pressing `v` opens the current file in **vi** text editor
+- vi is a powerful terminal text editor with a command mode
+- This is called **breaking out of a restricted environment**
+  using a feature of the tool itself
+
+**How vi Was Used to Escape:**
+```
+:set shell=/bin/bash    # tells vi to use bash as its shell
+:shell                  # opens a shell from within vi
+```
+- `:` enters vi's command mode
+- `set shell=/bin/bash` overrides the restricted shell with bash
+- `:shell` spawns a new bash shell — giving full access as bandit26
+- This is a known vi/vim escape technique used in CTFs and pentesting
+
+**What is `/etc/passwd`?**
+```
+bandit26:x:11026:11026:bandit level 26:/home/bandit26:/usr/bin/showtext
+│        │ │     │     │               │              │
+│        │ │     │     │               │              └── Shell
+│        │ │     │     │               └── Home directory
+│        │ │     │     └── Description
+│        │ │     └── Group ID
+│        │ └── User ID
+│        └── Password placeholder (x = stored in /etc/shadow)
+└── Username
+```
+
+**What I Learned:**
+- `/etc/passwd` reveals what shell every user on the system uses
+- Custom shells can be used to restrict or trap users
+- `more` pager stays open if terminal is too small — keeping
+  connection alive
+- `more` and `less` have escape features that can open editors
+- vi/vim `:shell` command can spawn a shell — classic escape technique
+- Terminal size can affect how programs behave
+
+**Vi/Vim Escape Techniques:**
+```bash
+:shell                  # open a shell directly
+:set shell=/bin/bash    # change shell first if restricted
+:! command              # run a single command without opening shell
+:! cat /etc/passwd      # example — run command from within vi
+```
+
+**Real Pentesting Relevance:**
+This level demonstrates **restricted shell escape** — a real
+pentesting technique. Many systems use restricted shells (rbash,
+custom scripts) to limit what users can do. Common escape methods:
+- Vi/Vim `:shell` or `:! bash`
+- `more`/`less` `v` command to open editor
+- `awk`, `python`, `perl` one-liners to spawn shells
+- Always check `/etc/passwd` to identify restricted shells on
+  a target system
+
+**Key Takeaway:**
+When a system restricts your shell, look at what tools are
+available to you — pagers, editors, and interpreters often have
+features that allow shell escapes. This is why security hardening
+involves carefully controlling which tools users can access,
+not just what shell they use.

@@ -506,6 +506,41 @@ chmod 777 /tmp/output.txt
 
 ---
 
+## 🔵 Bash Scripting Basics
+
+| Command | What it Does | Example |
+|---|---|---|
+| `bash script.sh` | Execute a bash script | `bash /tmp/brute.sh` |
+| `chmod +x script.sh` | Make script executable | `chmod +x brute.sh` |
+| `./script.sh` | Run executable script directly | `./brute.sh` |
+| `seq 0 9999` | Generate sequence of numbers | `seq 0000 9999` |
+| `for i in $(seq 0 9)` | Loop through a sequence | `for i in $(seq 0 9)` |
+
+**Basic Bash Script Structure:**
+```bash
+#!/bin/bash          # shebang — tells system to use bash
+# your commands here
+
+# Basic loop:
+for i in $(seq 0000 9999)
+do
+    echo "doing something with $i"
+done
+
+# Pipe loop output to command:
+for i in $(seq 0000 9999)
+do
+    echo "$i"
+done | nc localhost 30002 > output.txt
+```
+
+**Shebang Line:**
+- `#!/bin/bash` must be the very first line of every bash script
+- Tells the system which interpreter to use to run the script
+- Without it the system may not know how to execute the file
+
+---
+
 
 > 💡 This file is updated as new commands are learned.
 > Last updated: March 2026

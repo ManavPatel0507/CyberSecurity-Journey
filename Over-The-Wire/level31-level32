@@ -1,0 +1,95 @@
+---
+
+## Level 31 → Level 32
+**Objective:** Push a file to a remote git repository instead of
+pulling data from it — the reverse of previous git levels.
+
+**Requirements given:**
+- File name: `key.txt`
+- Content: `May I come in?`
+- Branch: `master`
+
+**Commands Used:**
+```bash
+git clone ssh://bandit31-git@bandit.labs.overthewire.org:2220/home/bandit31-git/repo bandit31repo
+cd bandit31repo
+cat README.md                       # revealed the task requirements
+
+echo 'May I come in?' > key.txt     # created the required file
+
+git add key.txt                     # BLOCKED by .gitignore
+git add -f key.txt                  # forced add, bypassing .gitignore
+
+git config --global user.email "manav@test.com"  # required before commit
+git config --global user.name "Manav"            # git needs author identity
+
+git commit -m "adding key.txt"      # committed the file locally
+git push origin master              # pushed to remote — server validated
+                                    # and returned the password
+```
+
+**What is `.gitignore`?**
+- A file that tells git which files to ignore and not track
+- Commonly used to exclude:
+  - Compiled files, logs, temporary files
+  - Sensitive files like passwords and API keys
+  - System files like `.DS_Store`
+- `key.txt` was listed in `.gitignore` — git refused to add it
+- `-f` flag forces git to add the file anyway overriding `.gitignore`
+
+**Why Git Needed Identity Configuration:**
+- Git requires author information for every commit
+- Name and email are stored in every commit permanently
+- First time using git on a machine you must configure this
+- Values don't need to be real for CTF purposes:
+```bash
+git config --global user.email "email@example.com"
+git config --global user.name "Your Name"
+```
+
+**The Git Push Workflow:**
+```bash
+echo 'content' > filename       # 1. create the file
+git add -f filename             # 2. stage the file for commit
+git commit -m "message"         # 3. commit locally with a message
+git push origin master          # 4. push to remote repository
+```
+
+**What `git push origin master` Means:**
+- `git push` — send commits to remote repository
+- `origin` — the name of the remote server (default name)
+- `master` — the branch to push to
+
+**Why the Push Was Rejected at the End:**
+- The server validated the file and returned the password
+- Then rejected the actual push — intentional CTF behaviour
+- The server runs a `pre-receive hook` that checks submissions
+- Getting the password is the goal — the rejection doesn't matter
+
+**Git Push vs Git Pull vs Git Clone:**
+| Command | Direction | What it Does |
+|---|---|---|
+| `git clone` | Remote → Local | Download entire repository |
+| `git pull` | Remote → Local | Download latest changes |
+| `git push` | Local → Remote | Upload your commits |
+
+**What I Learned:**
+- `.gitignore` blocks files from being tracked — `-f` overrides it
+- Git requires author identity configured before first commit
+- `git push origin master` sends local commits to remote server
+- Server side hooks can validate pushes and run custom code
+- Pre-receive hooks are used in real systems for security checks
+
+**Real Pentesting Relevance:**
+- `.gitignore` files reveal what the developers consider sensitive
+  — always read them when investigating a repository
+- Git hooks (`pre-receive`, `post-receive`) run code on the server
+  when pushes happen — misconfigured hooks can be exploited
+- Writing to a remote repository means you can potentially
+  inject malicious code into a project
+
+**Key Takeaway:**
+Git is not just for reading — pushing to repositories is equally
+important in pentesting. Writable repositories allow code injection
+and supply chain attacks. Always check if you have write access
+to any repository you find during a pentest.

@@ -1,0 +1,91 @@
+---
+
+## Level 29 → Level 30
+**Objective:** Find the password hidden in a different branch of a
+git repository — the main branch deliberately contains no passwords.
+
+**Commands Used:**
+```bash
+git clone ssh://bandit29-git@bandit.labs.overthewire.org:2220/home/bandit29-git/repo bandit29repo
+cd bandit29repo
+cat README.md                   # showed "<no passwords in production!>"
+git log                         # only 2 commits, nothing useful
+git branch -a                   # listed all branches:
+                                # * master
+                                #   remotes/origin/dev
+                                #   remotes/origin/master
+                                #   remotes/origin/sploits-dev
+git checkout dev                # switched to dev branch
+cat README.md                   # revealed the password
+```
+
+**What is a Git Branch?**
+- A branch is a separate independent version of the same repository
+- Teams use branches to work on different things simultaneously
+  without affecting the main codebase
+- Common branch names and their purposes:
+  - `master` / `main` — production code, stable version
+  - `dev` / `development` — work in progress, new features
+  - `staging` — testing before pushing to production
+  - `feature/xxx` — specific feature being developed
+- Branches are merged back into master when work is complete
+
+**What "No Passwords in Production" Meant:**
+- Production = the live, public facing version = master branch
+- Developers sometimes store credentials in dev branches
+  thinking they are safe because they are not "live"
+- This is a very common real world mistake
+- In pentesting, always check ALL branches not just master
+
+**`git branch -a` Output Explained:**
+```
+* master                    ← current branch (starred)
+  remotes/origin/dev        ← remote dev branch
+  remotes/origin/master     ← remote master branch  
+  remotes/origin/sploits-dev ← another remote branch
+```
+- `*` marks the branch you are currently on
+- `remotes/origin/` prefix means the branch exists on the
+  remote server, not just locally
+
+**How `git checkout` Works:**
+```bash
+git checkout branchname     # switch to an existing branch
+git checkout dev            # switch to dev branch
+git checkout master         # switch back to master
+```
+- Switching branches changes ALL files in your folder to match
+  that branch's version
+- Like switching between parallel universes of the same project
+
+**What I Learned:**
+- Git repositories can have multiple branches with different content
+- `git branch -a` lists all local and remote branches
+- `git checkout branchname` switches between branches
+- Sensitive data is often hidden in non-master branches
+- "No passwords in production" is a direct hint to check other branches
+- Always check every branch when investigating a git repository
+
+**Systematic Git Investigation Checklist:**
+```bash
+git log                     # 1. check commit history
+git branch -a               # 2. check all branches
+git checkout branchname     # 3. explore each branch
+git show commitID           # 4. examine suspicious commits
+git diff branch1 branch2    # 5. compare branches
+```
+
+**Real Pentesting Relevance:**
+Exposed credentials in non-master branches is extremely common
+in real bug bounty and pentesting findings:
+- Dev branches often contain test credentials and API keys
+- Feature branches may have hardcoded passwords for testing
+- Old branches that were never deleted contain historical data
+- Tools like **truffleHog** and **gitleaks** scan all branches
+  automatically for sensitive data patterns
+
+**Key Takeaway:**
+Never only check the master branch of a repository. Developers
+regularly leave sensitive data in dev, staging, and feature
+branches assuming they are private or temporary. Always run
+`git branch -a` and investigate every branch systematically.

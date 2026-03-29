@@ -1,0 +1,98 @@
+---
+
+## Level 32 → Level 33
+**Objective:** Escape an uppercase shell that converts every command
+you type into uppercase before executing it.
+
+**Commands Used:**
+```bash
+# After SSH login — everything typed gets uppercased:
+ls          # becomes LS — command not found
+whoami      # becomes WHOAMI — command not found
+
+$0          # bypasses uppercase conversion — drops into shell
+whoami      # confirmed user is bandit33
+cat /etc/bandit_pass/bandit33   # retrieved the final password
+```
+
+**What the Uppercase Shell Did:**
+- A custom restricted shell was assigned to bandit32
+- Every command typed gets converted to uppercase before executing
+- `ls` → `LS`, `cat` → `CAT`, `whoami` → `WHOAMI`
+- None of these uppercase versions exist as commands → all fail
+- Designed to make the shell completely unusable
+
+**What is `$0`?**
+- A special shell variable that holds the name of the current
+  shell or script being executed
+- Expands to the shell path before any uppercase conversion happens
+- Since it starts with `$` it gets evaluated as a variable first —
+  the uppercase filter never sees it as a command
+- When run interactively `$0` spawns a new instance of the shell
+- Effectively re-launches the shell without the uppercase restriction
+
+**Why `$0` Worked:**
+```
+Normal command flow:
+You type → uppercase filter → COMMAND → not found
+
+$0 flow:
+You type $0 → variable expansion happens first → /bin/sh launches
+→ uppercase filter never gets to process it
+→ new unrestricted shell spawned
+```
+
+**Why bandit33 Instead of bandit32:**
+- The uppercase shell binary was owned by bandit33 with setuid set
+- Same concept as levels 19 and 26 — setuid runs as the file owner
+- Spawning a shell via `$0` inherited bandit33's privileges
+- `whoami` confirmed you were operating as bandit33
+
+**What I Learned:**
+- Restricted shells can sometimes be bypassed using shell variables
+- `$0` is a special variable referring to the current shell process
+- Variable expansion happens before command processing — useful
+  for bypassing filters
+- Uppercase filters are a weak restriction — special variables
+  and expansions bypass them
+- Always try shell special variables when commands are blocked:
+  `$0`, `$SHELL`, `$BASH`
+
+**Special Shell Variables Worth Knowing:**
+| Variable | Meaning |
+|---|---|
+| `$0` | Name/path of current shell or script |
+| `$SHELL` | Path to current user's default shell |
+| `$HOME` | Current user's home directory |
+| `$PATH` | Directories searched for commands |
+| `$USER` | Current username |
+| `$$` | Process ID of current shell |
+
+**Real Pentesting Relevance:**
+Restricted shell escapes are a real privilege escalation technique.
+Common methods when commands are restricted or filtered:
+- `$0` — spawn new shell via variable expansion
+- `vi`/`vim` `:shell` — as used in level 25
+- Python: `python3 -c 'import os; os.system("/bin/bash")'`
+- Perl: `perl -e 'exec "/bin/bash"'`
+- `awk`: `awk 'BEGIN {system("/bin/bash")}'`
+
+**Key Takeaway:**
+Filters and restrictions are only as strong as their implementation.
+Character filters, uppercase converters, and restricted shells
+all have edge cases that can be exploited. Shell special variables
+and built-in expansions often bypass simple string filters because
+they are evaluated before the filter sees them.
+
+---
+
+## 🎉 OverTheWire Bandit Complete!
+All 26 levels of Bandit finished. Key skills learned throughout:
+- Linux navigation and file permissions
+- Encoding and decoding (Base64, ROT13, Hex)
+- Compression and binary analysis
+- Network tools (Netcat, OpenSSL, SSH, Nmap)
+- Privilege escalation (Setuid, Cron jobs, Shell escapes)
+- Git security (History, Branches, Tags)
+- Scripting and brute forcing
+- Restricted environment escapes

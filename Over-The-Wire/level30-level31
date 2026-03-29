@@ -1,0 +1,70 @@
+---
+
+## Level 30 → Level 31
+**Objective:** Find the password hidden in a git tag — not in the
+files, commit history, or branches.
+
+**Commands Used:**
+```bash
+git clone ssh://bandit30-git@bandit.labs.overthewire.org:2220/home/bandit30-git/repo bandit30repo
+cd bandit30repo
+cat README.md                   # "just an empty file... muahaha"
+git log                         # nothing useful in commit history
+git branch -a                   # no other branches besides master
+git tag                         # listed tags — found "secret"
+git show secret                 # revealed the password
+```
+
+**What is a Git Tag?**
+- A tag is a label attached to a specific point in git history
+- Usually used to mark important versions like releases
+  e.g. `v1.0`, `v2.3`, `release-2024`
+- Unlike branches, tags don't change — they point to one fixed commit
+- Tags can also store arbitrary data — like a password in this case
+- Not shown in `git log` by default — easy to miss
+
+**Types of Git Tags:**
+| Type | Description |
+|---|---|
+| Lightweight tag | Just a pointer to a commit — like a bookmark |
+| Annotated tag | Contains extra data — message, author, date |
+
+**Why Tags Are Interesting in Pentesting:**
+- Tags are often overlooked when investigating repositories
+- Developers use tags to mark releases — which may contain
+  old credentials or sensitive configuration
+- Annotated tags can store messages with sensitive information
+- Tags persist even when branches are deleted
+
+**The Full Git Investigation Checklist (Updated):**
+```bash
+cat README.md               # 1. check obvious files
+git log                     # 2. check commit history
+git branch -a               # 3. check all branches
+git tag                     # 4. check all tags ← new this level
+git show tagname            # 5. examine tag contents
+git show commitID           # 6. examine specific commits
+```
+
+**What I Learned:**
+- Git has three main places to hide data:
+  - Commit history (`git log` + `git show`)
+  - Branches (`git branch -a` + `git checkout`)
+  - Tags (`git tag` + `git show`) ← new this level
+- Tags are not visible in `git log` — need separate command
+- `git show` works on both commit IDs and tag names
+- Always run all three checks when investigating a repository
+
+**Real Pentesting Relevance:**
+Git tags are commonly used to mark production releases — making
+them high value targets in pentesting:
+- Release tags often contain production configuration
+- Tags named `v1.0`, `release`, `prod` are worth checking
+- Some developers store deployment notes in annotated tags
+- Tags survive branch deletions — old sensitive data persists
+
+**Key Takeaway:**
+A complete git investigation requires checking commits, branches
+AND tags. Missing any one of these three could mean missing the
+sensitive data you are looking for. Always run all three commands
+as part of your standard git reconnaissance process.

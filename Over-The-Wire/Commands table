@@ -593,6 +593,17 @@ username:x:UID:GID:description:home_directory:shell
 | `git tag` | List all tags in repository | `git tag` |
 | `git show tagname` | Show contents of a specific tag | `git show secret` |
 | `git tag -a tagname` | Create an annotated tag | `git tag -a v1.0` |
+| `git add filename` | Stage a file for commit | `git add key.txt` |
+| `git add -f filename` | Force add ignored file | `git add -f key.txt` |
+| `git commit -m "message"` | Commit staged files locally | `git commit -m "added key"` |
+| `git push origin branch` | Push commits to remote | `git push origin master` |
+| `git config --global user.email` | Set git author email | `git config --global user.email "a@b.com"` |
+| `git config --global user.name` | Set git author name | `git config --global user.name "Name"` |
+
+**Git Data Flow:**
+```
+Working Directory → git add → Staging Area → git commit → Local Repo → git push → Remote Repo
+```
 
 **Complete Git Recon Checklist:**
 ```bash

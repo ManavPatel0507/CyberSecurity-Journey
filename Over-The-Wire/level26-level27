@@ -1,0 +1,50 @@
+---
+
+## Level 26 → Level 27
+**Objective:** Use the setuid binary found in bandit26's home directory
+to read bandit27's password — same concept as level 19 → 20.
+
+**Commands Used:**
+```bash
+# Getting into bandit26 shell (same as previous level):
+# 1. Resize terminal to ~5 lines tall
+# 2. SSH in with private key
+ssh -i ~/bandit26.private bandit26@bandit.labs.overthewire.org -p 2220
+# 3. Press 'v' inside more pager → opens vi
+# 4. In vi:
+:set shell=/bin/bash        # set shell to bash
+:shell                      # spawn bash shell as bandit26
+
+# Inside bandit26 shell:
+ls                          # found bandit27-do (red = setuid binary)
+                            # and text.txt
+
+./bandit27-do whoami        # confirmed it runs as bandit27
+./bandit27-do cat /etc/bandit_pass/bandit27  # retrieved password
+```
+
+**Why This Worked:**
+- `bandit27-do` is a setuid binary owned by bandit27
+- Running anything through it executes as bandit27
+- bandit27 has read permission on `/etc/bandit_pass/bandit27`
+- bandit26 alone would get Permission Denied
+
+**Connection to Level 19 → 20:**
+Exact same technique — setuid binary used to run commands as
+the next level's user:
+- Level 19: `bandit20-do` → ran as bandit20
+- Level 26: `bandit27-do` → ran as bandit27
+
+**What I Learned:**
+- Setuid binaries appear repeatedly as a privilege escalation method
+- Always check `ls` for red highlighted files when you get a new shell
+- Running `whoami` through the binary first confirms which user
+  it runs as before attempting to read password files
+- The restricted shell escape from level 25→26 carries over —
+  you need to be inside the bandit26 shell first
+
+**Key Takeaway:**
+Setuid binaries are one of the most common privilege escalation
+vectors in Linux. Every time you get access to a new user always
+run `ls -la` and look for red files or files with `s` in their
+permissions — they are almost always exploitable.

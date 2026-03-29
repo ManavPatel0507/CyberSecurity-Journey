@@ -26,7 +26,7 @@ Started: March 2026
 | Stage | Topic | Status |
 |---|---|---|
 | 1 | TryHackMe - Pre Security Path (Rooms 1–4) | ✅ Completed |
-| 2 | OverTheWire - Bandit (All 26 Levels) | ✅ Completed |
+| 2 | OverTheWire - Bandit (All 33 Levels) | ✅ Completed |
 | 3 | TryHackMe - Jr Penetration Tester | 🔄 In Progress |
 | 4 | PortSwigger Web Security Academy | ⏳ Upcoming |
 | 5 | HackTheBox - Starting Point Machines | ⏳ Upcoming |
@@ -116,7 +116,7 @@ cybersecurity-journey/
 | Platform | Progress |
 |---|---|
 | TryHackMe | 4 rooms completed |
-| OverTheWire Bandit | 26/26 levels ✅ |
+| OverTheWire Bandit | 33/33 levels ✅ |
 | HackTheBox | Not started yet |
 | PortSwigger | Not started yet |
 | Bug Bounty | Not started yet |

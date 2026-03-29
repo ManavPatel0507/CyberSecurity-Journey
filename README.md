@@ -25,31 +25,101 @@ Started: March 2026
 
 | Stage | Topic | Status |
 |---|---|---|
-| 1 | TryHackMe - Pre Security Path | 🔄 In Progress |
-| 2 | TryHackMe - Jr Penetration Tester | ⏳ Upcoming |
-| 3 | HackTheBox - Easy Machines | ⏳ Upcoming |
+| 1 | TryHackMe - Pre Security Path (Rooms 1–4) | ✅ Completed |
+| 2 | OverTheWire - Bandit (All 26 Levels) | ✅ Completed |
+| 3 | TryHackMe - Jr Penetration Tester | 🔄 In Progress |
 | 4 | PortSwigger Web Security Academy | ⏳ Upcoming |
-| 5 | Bug Bounty (HackerOne / Bugcrowd) | ⏳ Upcoming |
+| 5 | HackTheBox - Starting Point Machines | ⏳ Upcoming |
+| 6 | HackTheBox - Easy Machines | ⏳ Upcoming |
+| 7 | Bug Bounty (HackerOne / Bugcrowd) | ⏳ Upcoming |
 
 ---
 
-## 📂 Structure
+## 🏆 Milestones
+
+- ✅ **March 2026** — Completed TryHackMe Pre Security Path (4 rooms)
+- ✅ **March 2026** — Completed all 26 levels of OverTheWire Bandit
+- 🔄 **Now** — Starting TryHackMe Jr Penetration Tester path
+
+---
+
+## 📂 Repository Structure
 ```
 cybersecurity-journey/
 │
-├── tryhackme/       # Room writeups from TryHackMe
-├── hackthebox/      # Machine writeups from HackTheBox
-└── notes/           # General concept notes
+├── Over-The-Wire/          # All 26 Bandit level writeups
+│   ├── level00-level01
+│   ├── level01-level02
+│   ├── ...
+│   ├── level25-level26
+│   └── Commands table      # Full command reference
+│
+├── tryhackme/              # TryHackMe room writeups
+│   ├── intro-to-ethical-hacking.md
+│   ├── defensive-security-intro.md
+│   ├── careers-in-cybersecurity.md
+│   └── intro-to-pentesting.md
+│
+├── hackthebox/             # HackTheBox machine writeups
+│   └── (coming soon)
+│
+└── notes/                  # General concept notes
+    └── command-reference.md
 ```
 
 ---
 
-## 🛠️ Tools I'm Learning
+## 🛠️ Tools Learned So Far
 
-- Nmap, DIRB, Burp Suite
-- Kali Linux
-- Metasploit
-- Wireshark
+**Linux & Navigation**
+- Basic Linux commands, file permissions, hidden files
+- SSH, SCP, file transfer techniques
+
+**Networking**
+- Nmap — port scanning and service detection
+- Netcat — connecting to and listening on ports
+- OpenSSL — SSL/TLS encrypted connections
+- Wireshark — packet analysis (upcoming)
+
+**Web Security**
+- DIRB — directory brute forcing
+- Burp Suite — HTTP interception (upcoming)
+
+**Exploitation & Privilege Escalation**
+- Setuid binary abuse
+- Cron job exploitation
+- Restricted shell escapes (vi, uppercase filter bypass)
+- Brute forcing with custom bash scripts
+
+**Cryptography & Encoding**
+- Base64, ROT13, Hexdump (xxd)
+- MD5 hashing
+- SSH key authentication
+
+**Compression & File Analysis**
+- gzip, bzip2, tar extraction
+- Binary file analysis with strings and file commands
+
+**Git Security**
+- Commit history analysis
+- Branch and tag enumeration
+- Credential recovery from git history
+
+**Scripting**
+- Bash scripting for automation and brute forcing
+- Pipeline and redirection techniques
+
+---
+
+## 📊 Progress Stats
+
+| Platform | Progress |
+|---|---|
+| TryHackMe | 4 rooms completed |
+| OverTheWire Bandit | 26/26 levels ✅ |
+| HackTheBox | Not started yet |
+| PortSwigger | Not started yet |
+| Bug Bounty | Not started yet |
 
 ---
 

@@ -590,6 +590,18 @@ username:x:UID:GID:description:home_directory:shell
 | `git branch -a` | List all local and remote branches | `git branch -a` |
 | `git checkout branch` | Switch to a different branch | `git checkout dev` |
 | `git diff branch1 branch2` | Compare two branches | `git diff master dev` |
+| `git tag` | List all tags in repository | `git tag` |
+| `git show tagname` | Show contents of a specific tag | `git show secret` |
+| `git tag -a tagname` | Create an annotated tag | `git tag -a v1.0` |
+
+**Complete Git Recon Checklist:**
+```bash
+git log --oneline       # commit history
+git branch -a           # all branches  
+git tag                 # all tags
+```
+These three commands should always be run when investigating
+any git repository during pentesting or CTF challenges.
 
 **Common Branch Names to Check in Pentesting:**
 | Branch | Often Contains |

@@ -1,0 +1,71 @@
+---
+
+## Level 27 → Level 28
+**Objective:** Clone a git repository hosted on the bandit server
+and find the password inside it.
+
+**Commands Used:**
+```bash
+git clone ssh://bandit27-git@bandit.labs.overthewire.org:2220/home/bandit27-git/repo
+                                        # cloned the remote repository
+                                        # entered bandit27 password when prompted
+cd repo                                 # moved into cloned repository
+ls -la                                  # found README file
+cat README                              # revealed the password
+```
+
+**What is Git?**
+- Git is a version control system — tracks changes to files over time
+- Allows multiple people to collaborate on the same codebase
+- Stores entire history of a project including all previous versions
+- Used by almost every software project in the world
+- GitHub, GitLab, and Bitbucket are platforms that host git repositories
+
+**What is a Repository (repo)?**
+- A folder that git tracks — contains all project files and history
+- Can be stored locally on your machine or remotely on a server
+- `git clone` downloads a remote repository to your local machine
+- Once cloned you have a full copy of the repo and its history
+
+**Git Clone URL Breakdown:**
+```
+git clone ssh://bandit27-git@bandit.labs.overthewire.org:2220/home/bandit27-git/repo
+           │    │            │                            │    │
+           │    │            │                            │    └── Path to repo
+           │    │            │                            └── Port number
+           │    │            └── Host
+           │    └── Username
+           └── Protocol (SSH)
+```
+
+**Why Port Goes in the URL:**
+- Normal git clone: `git clone ssh://user@host/path`
+- With custom port: `git clone ssh://user@host:port/path`
+- Unlike SSH where `-p` flag sets the port, git clone requires
+  the port inside the URL after the host with a `:`
+- Using `-p` with git clone doesn't work — common mistake
+
+**What I Learned:**
+- Git repositories can be hosted on SSH servers
+- `git clone` downloads an entire repository to your local machine
+- Port number goes inside the SSH URL for git, not as a `-p` flag
+- Repositories often contain sensitive files left by developers —
+  README files, config files, credentials etc
+- Always explore a cloned repo thoroughly with `ls -la`
+
+**Real Pentesting Relevance:**
+Finding exposed git repositories is a very common real world
+vulnerability. Developers often accidentally commit sensitive data:
+- Passwords and API keys in config files
+- Private keys in repository history
+- Internal infrastructure details in README files
+- Even deleted files can be recovered from git history
+
+**Key Takeaway:**
+Git repositories are treasure troves in pentesting. Even if
+sensitive data has been deleted from the latest version, it
+may still exist in the commit history. Always check:
+- Current files with `ls -la`
+- Git history with `git log`
+- Previous versions with `git show`
+- All branches with `git branch -a`

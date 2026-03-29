@@ -1,0 +1,88 @@
+---
+
+## Level 28 → Level 29
+**Objective:** Clone a git repository where the password has been
+redacted in the latest commit — recover it from git history.
+
+**Commands Used:**
+```bash
+git clone ssh://bandit28-git@bandit.labs.overthewire.org:2220/home/bandit28-git/repo bandit28repo
+                                        # cloned into custom local folder name
+                                        # 'repo' already existed from last level
+cd bandit28repo                         # moved into cloned repository
+ls                                      # found README.md
+cat README.md                           # password showed as xxxxxxxxxx — redacted
+git log                                 # checked commit history — found 3 commits
+git show 8b7c651b37ce7a94633b7b7b7c980ded19a16e4f
+                                        # viewed second commit contents
+                                        # found the real password
+```
+
+**Why `repo` Folder Already Existed:**
+- Last level cloned a repo into a folder called `repo`
+- Git refuses to clone into an existing non-empty folder
+- Solution: specify a custom local folder name at the end of
+  the clone command as a separate argument
+```bash
+git clone <url> foldername    # clones into custom named folder
+git clone <url> bandit28repo  # example used here
+```
+
+**URL Path vs Local Folder Name:**
+```
+git clone ssh://user@host:port/home/bandit28-git/repo    bandit28repo
+                               │                          │
+                               └── Server repo path       └── Local folder name
+                               (never change this)         (you choose this)
+```
+
+**What the Git Log Showed:**
+```
+commit 1 — "fix info leak"     ← newest, current, password redacted
+commit 2 — "add missing data"  ← password was added here (target)
+commit 3 — initial commit      ← basic setup
+```
+
+**Why the Password Was Still Recoverable:**
+- Git tracks every change ever made to a repository
+- Deleting or changing data in a new commit does NOT erase history
+- Every previous commit is permanently stored and retrievable
+- `git show commitID` displays exactly what changed in that commit
+- This is a real world vulnerability — developers often accidentally
+  commit passwords and then try to "fix" it by overwriting in a
+  new commit, not realizing the history is permanent
+
+**How to Read `git show` Output:**
+```
+- password: xxxxxxxxxx    ← line removed in this commit (shown in red)
++ password: xxxxxxxxxx    ← line added in this commit (shown in green)
+```
+- Lines starting with `-` = what was removed
+- Lines starting with `+` = what was added
+- The removed line (`-`) shows the original password
+
+**What I Learned:**
+- Git history is permanent — overwriting sensitive data in a new
+  commit does not erase it from history
+- `git log` shows all commits with their IDs, authors and messages
+- `git show commitID` reveals exactly what changed in that commit
+- Commit messages are clues — "fix info leak" immediately signals
+  something sensitive was removed
+- Always check git history when current files look sanitized
+
+**Real Pentesting Relevance:**
+Exposed credentials in git history is one of the most common
+real world vulnerabilities found in bug bounty and pentesting:
+- API keys accidentally committed then "deleted"
+- Database passwords in config files
+- Private keys pushed to public repositories
+- Internal URLs and infrastructure details
+Tools like **truffleHog** and **git-secrets** automatically
+scan git history for sensitive data patterns.
+
+**Key Takeaway:**
+Never trust that sensitive data is gone just because it was
+removed in a later commit. Git history tells the whole story.
+In real pentesting always run `git log` and check suspicious
+commit messages like "remove password", "fix leak", "delete key"
+— these are red flags that something sensitive was there before.

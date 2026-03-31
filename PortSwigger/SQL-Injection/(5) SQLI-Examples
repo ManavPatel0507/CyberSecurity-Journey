@@ -1,0 +1,8 @@
+#SQL injection examples
+
+-There are lots of SQL injection vulnerabilities, attacks, and techniques, that occur in different situations. Some common SQL injection examples include:
+
+   - Retrieving hidden data, where you can modify a SQL query to return additional results.
+   - Subverting application logic, where you can change a query to interfere with the application's logic.
+   - UNION attacks, where you can retrieve data from different database tables.
+   - Blind SQL injection, where the results of a query you control are not returned in the application's responses.

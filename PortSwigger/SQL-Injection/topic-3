@@ -1,0 +1,13 @@
+continuation of the sqli
+
+Retrieving data from other database tables
+
+In cases where the application responds with the results of a SQL query, an attacker can use a SQL injection vulnerability to retrieve data from other tables within the database. You can use the UNION keyword to execute an additional SELECT query and append the results to the original query.
+
+For example, if an application executes the following query containing the user input Gifts:
+SELECT name, description FROM products WHERE category = 'Gifts'
+
+An attacker can submit the input:
+' UNION SELECT username, password FROM users--
+
+This causes the application to return all usernames and passwords along with the names and descriptions of products. 

